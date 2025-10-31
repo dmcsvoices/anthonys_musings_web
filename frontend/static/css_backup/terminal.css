@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anthony's Musings - AI-Generated Creative Content Archive">
+    <meta name="author" content="Anthony's Musings">
+    <title>Anthony's Musings - Creative Content Archive</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/css/terminal.css" as="style">
+    <link rel="preload" href="/js/main.js" as="script">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/terminal.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+    
+    <!-- Meta tags for security -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="terminal-logo">
+                <pre class="ascii-art">
+    ╔═══════════════════════════════════════╗
+    ║         ANTHONY'S MUSINGS             ║
+    ║      [CREATIVE ARCHIVE SYSTEM]        ║
+    ╚═══════════════════════════════════════╝
+                </pre>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-text">Initializing neural networks...</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-bracket">[</span>
+                ANTHONY'S_MUSINGS
+                <span class="logo-bracket">]</span>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="search-input" placeholder="search > creative_content --query=" autocomplete="off">
+                <div id="searchResults" class="search-results hidden"></div>
+            </div>
+            <div class="header-controls">
+                <button class="explicit-toggle" id="explicitToggle">
+                    <span class="toggle-icon">🚫</span>
+                    <span class="toggle-text">EXPLICIT_FILTER_ON</span>
+                </button>
+                <div class="connection-status">
+                    <span class="status-indicator" id="connectionStatus">●</span>
+                    <span class="status-text">ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-section">
+                <h3 class="section-title">
+                    <span class="section-bracket">[</span>NAVIGATION<span class="section-bracket">]</span>
+                </h3>
+                <ul class="nav-links">
+                    <li><a href="#" class="nav-link active" data-page="dashboard">
+                        <span class="nav-icon">📊</span> DASHBOARD.EXE
+                    </a></li>
+                    <li><a href="#" class="nav-link" data-page="browse">
+                        <span class="nav-icon">📚</span> BROWSE_ALL.EXE
+                    </a></li>
+                    <li><a href="#" class="nav-link" data-page="search">
+                        <span class="nav-icon">🔍</span> SEARCH.EXE
+                    </a></li>
+                    <li><a href="#" class="nav-link" data-page="tags">
+                        <span class="nav-icon">🏷️</span> TAG_EXPLORER.EXE
+                    </a></li>
+                    <li><a href="#" class="nav-link" data-page="analytics">
+                        <span class="nav-icon">📈</span> ANALYTICS.EXE
+                    </a></li>
+                </ul>
+            </nav>
+
+            <div class="filter-section">
+                <h3 class="section-title">
+                    <span class="section-bracket">[</span>FILTER_BY_TYPE<span class="section-bracket">]</span>
+                </h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-type="all">ALL</button>
+                    <button class="filter-btn" data-type="poetry">POETRY</button>
+                    <button class="filter-btn" data-type="prose">PROSE</button>
+                    <button class="filter-btn" data-type="dialogue">DIALOGUE</button>
+                    <button class="filter-btn" data-type="erotica">EROTICA</button>
+                    <button class="filter-btn" data-type="song">SONGS</button>
+                    <button class="filter-btn" data-type="fragment">FRAGMENTS</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="section-title">
+                    <span class="section-bracket">[</span>POPULAR_TAGS<span class="section-bracket">]</span>
+                </h3>
+                <div class="tag-cloud" id="tagCloud">
+                    <!-- Tags will be populated dynamically -->
+                </div>
+            </div>
+
+            <div class="system-info">
+                <h3 class="section-title">
+                    <span class="section-bracket">[</span>SYSTEM_STATUS<span class="section-bracket">]</span>
+                </h3>
+                <div class="system-stats">
+                    <div class="stat-line">
+                        <span class="stat-label">TOTAL_ENTRIES:</span>
+                        <span class="stat-value" id="totalEntries">---</span>
+                    </div>
+                    <div class="stat-line">
+                        <span class="stat-label">MEMORY_USAGE:</span>
+                        <span class="stat-value" id="memoryUsage">---KB</span>
+                    </div>
+                    <div class="stat-line">
+                        <span class="stat-label">LAST_UPDATE:</span>
+                        <span class="stat-value" id="lastUpdate">---</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page active">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <span class="title-prompt">anthony@musings:~$</span> dashboard --verbose
+                    </h1>
+                    <p class="page-subtitle">CREATIVE_ARCHIVE_SYSTEM v2.1.0 | STATUS: OPERATIONAL</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">TOTAL_WRITINGS</div>
+                        <div class="stat-number" id="totalWritings">---</div>
+                        <div class="stat-footer">entries in database</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">WORD_COUNT</div>
+                        <div class="stat-number" id="totalWords">---</div>
+                        <div class="stat-footer">words processed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">AVG_LENGTH</div>
+                        <div class="stat-number" id="avgWords">---</div>
+                        <div class="stat-footer">words per entry</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">UNIQUE_TAGS</div>
+                        <div class="stat-number" id="uniqueTags">---</div>
+                        <div class="stat-footer">classification tags</div>
+                    </div>
+                </div>
+
+                <div class="terminal-section">
+                    <h2 class="section-header">
+                        <span class="prompt">root@archive:~#</span> ls -la recent_creations/
+                    </h2>
+                    <div class="content-grid" id="recentContent">
+                        <!-- Content cards will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Browse Page -->
+            <div id="browse" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <span class="title-prompt">anthony@musings:~$</span> cat /archive/all_writings.db
+                    </h1>
+                    <p class="page-subtitle">BROWSING COMPLETE CREATIVE ARCHIVE</p>
+                </div>
+
+                <div class="browse-controls">
+                    <div class="view-controls">
+                        <div class="control-group">
+                            <label class="control-label">VIEW_MODE:</label>
+                            <div class="view-toggle">
+                                <button class="view-btn active" data-view="cards">CARDS</button>
+                                <button class="view-btn" data-view="list">LIST</button>
+                                <button class="view-btn" data-view="terminal">TERMINAL</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">SORT_BY:</label>
+                            <select class="sort-select" id="sortSelect">
+                                <option value="date_desc">DATE_DESC</option>
+                                <option value="date_asc">DATE_ASC</option>
+                                <option value="title_asc">TITLE_ASC</option>
+                                <option value="title_desc">TITLE_DESC</option>
+                                <option value="words_desc">WORDS_DESC</option>
+                                <option value="words_asc">WORDS_ASC</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-container">
+                    <div class="content-grid" id="browseContent">
+                        <!-- Content will be populated dynamically -->
+                    </div>
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Viewer -->
+            <div id="content-viewer" class="page">
+                <div class="content-viewer">
+                    <div class="viewer-header">
+                        <button class="back-btn" id="backBtn">← RETURN_TO_ARCHIVE</button>
+                        <div class="viewer-controls">
+                            <button class="control-btn" id="exportBtn">EXPORT</button>
+                            <button class="control-btn" id="shareBtn">SHARE</button>
+                            <button class="control-btn" id="editBtn">EDIT</button>
+                        </div>
+                    </div>
+                    
+                    <div class="content-display" id="contentDisplay">
+                        <!-- Content will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Page -->
+            <div id="search" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <span class="title-prompt">anthony@musings:~$</span> grep -r ".*" /archive/
+                    </h1>
+                    <p class="page-subtitle">FULL-TEXT SEARCH INTERFACE</p>
+                </div>
+
+                <div class="search-interface">
+                    <div class="search-controls">
+                        <div class="search-input-container">
+                            <input type="text" id="advancedSearch" class="advanced-search-input" placeholder="Enter search query...">
+                            <button class="search-btn">EXECUTE</button>
+                        </div>
+                        <div class="search-filters">
+                            <div class="filter-group">
+                                <label>CONTENT_TYPE:</label>
+                                <select id="searchTypeFilter">
+                                    <option value="">ALL</option>
+                                    <option value="poetry">POETRY</option>
+                                    <option value="prose">PROSE</option>
+                                    <option value="dialogue">DIALOGUE</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>INCLUDE_EXPLICIT:</label>
+                                <input type="checkbox" id="includeExplicit">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-results-container" id="searchResultsContainer">
+                        <!-- Search results will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Warning Modal -->
+            <div id="contentWarning" class="modal hidden">
+                <div class="modal-content warning-modal">
+                    <div class="warning-header">
+                        <div class="warning-icon">⚠️</div>
+                        <h2 class="warning-title">CONTENT_WARNING</h2>
+                    </div>
+                    <div class="warning-body">
+                        <p class="warning-text">
+                            [SYSTEM_ALERT] The requested content contains explicit material intended for mature audiences (18+).
+                            This may include adult themes, sexual content, or other mature subject matter.
+                        </p>
+                        <div class="warning-details">
+                            <div class="detail-line">
+                                <span class="detail-label">CONTENT_TYPE:</span>
+                                <span class="detail-value" id="warningContentType">---</span>
+                            </div>
+                            <div class="detail-line">
+                                <span class="detail-label">MATURITY_RATING:</span>
+                                <span class="detail-value">18+</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="warning-buttons">
+                        <button class="btn btn-primary" id="confirmAge">CONFIRM_AGE_18+ → PROCEED</button>
+                        <button class="btn btn-secondary" id="cancelWarning">CANCEL → RETURN</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-stats">
+                <span class="footer-stat">ARCHIVE_SIZE: <span id="footerArchiveSize">---</span></span>
+                <span class="footer-stat">MEMORY_ALLOCATED: <span id="footerMemory">---KB</span></span>
+                <span class="footer-stat">LAST_SYNC: <span id="footerLastSync">---</span></span>
+            </div>
+            <div class="footer-info">
+                <p>&copy; 2025 ANTHONY'S_MUSINGS_ARCHIVE_SYSTEM | VERSION 2.1.0 | STATUS: OPERATIONAL</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/api.js"></script>
+    <script src="/js/components/contentCard.js"></script>
+    <script src="/js/components/contentViewer.js"></script>
+    <script src="/js/components/searchBar.js"></script>
+    <script src="/js/main.js"></script>
+
+    <!-- Service Worker for PWA (optional) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

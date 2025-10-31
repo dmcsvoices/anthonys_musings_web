@@ -1,0 +1,2763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anthony's Musings - Creative Studio</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #2d1b69 0%, #11051f 40%, #1a0b2e 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* CRT Glitch Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 255, 255, 0.03) 2px,
+                    rgba(255, 255, 255, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: -1;
+            animation: scanlines 0.1s linear infinite;
+        }
+
+        /* Matrix-style glitch streams */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: matrix-glitch 8s ease-in-out infinite;
+        }
+
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+
+        @keyframes matrix-glitch {
+            0%, 90% { 
+                opacity: 0;
+                transform: translateY(0) scale(1);
+            }
+            2%, 4% { 
+                opacity: 0.8;
+                transform: translateY(-20px) scale(1.05);
+            }
+            6%, 8% {
+                opacity: 0.4;
+                transform: translateY(-40px) scale(0.95);
+            }
+            10%, 12% {
+                opacity: 0.6;
+                transform: translateY(-60px) scale(1.02);
+            }
+            95%, 100% {
+                opacity: 0;
+                transform: translateY(-100vh) scale(1);
+            }
+        }
+
+        /* Horizontal CRT glitch effect */
+        .crt-glitch {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 215, 0, 0.6) 50%, 
+                transparent 100%);
+            z-index: -1;
+            animation: crt-sweep 6s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes crt-sweep {
+            0%, 80% {
+                opacity: 0;
+                top: -10px;
+                transform: scaleX(0);
+            }
+            85% {
+                opacity: 0.8;
+                transform: scaleX(1);
+            }
+            90% {
+                opacity: 0.6;
+                top: 50%;
+                transform: scaleX(1.2);
+            }
+            95% {
+                opacity: 0.3;
+                top: 80%;
+                transform: scaleX(0.8);
+            }
+            100% {
+                opacity: 0;
+                top: 100%;
+                transform: scaleX(0);
+            }
+        }
+
+        /* Digital noise overlay */
+        .digital-noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-conic-gradient(from 0deg at 50% 50%, 
+                    transparent 0deg, 
+                    rgba(138, 43, 226, 0.05) 1deg, 
+                    transparent 2deg);
+            pointer-events: none;
+            z-index: -1;
+            animation: digital-flicker 12s ease-in-out infinite;
+        }
+
+        @keyframes digital-flicker {
+            0%, 95% { opacity: 0; }
+            96%, 98% { opacity: 0.3; }
+            99%, 100% { opacity: 0; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .header h1 {
+            background: linear-gradient(135deg, #9d4edd, #c77dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 0 30px rgba(157, 78, 221, 0.3);
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* NEW: Prompt Studio Section */
+        .prompt-studio {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .studio-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .studio-icon {
+            font-size: 2em;
+            background: linear-gradient(135deg, #9d4edd, #c77dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .studio-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .studio-subtitle {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .prompt-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .prompt-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            line-height: 1.6;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.8);
+        }
+
+        .prompt-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255,255,255,1);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .prompt-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9em;
+        }
+
+        .option-select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.8);
+            transition: all 0.3s ease;
+        }
+
+        .option-select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255,255,255,1);
+        }
+
+        .generate-button {
+            background: linear-gradient(135deg, #9d4edd, #c77dff);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(157, 78, 221, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(157, 78, 221, 0.4);
+        }
+
+        .generate-button:active {
+            transform: translateY(0);
+        }
+
+        .generate-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .prompt-suggestions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .suggestion-chip {
+            padding: 10px 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .suggestion-chip:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+
+        .generation-status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.2);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-active {
+            background: rgba(52, 152, 219, 0.1);
+            border-color: rgba(52, 152, 219, 0.2);
+        }
+
+        .status-error {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: rgba(231, 76, 60, 0.2);
+        }
+
+        /* Prompt Type Selector Styles */
+        .prompt-type-selector {
+            margin-bottom: 25px;
+        }
+
+        .type-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .type-btn {
+            background: rgba(255,255,255,0.8);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 20px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .type-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .type-btn.active {
+            background: linear-gradient(135deg, #9d4edd, #c77dff);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 8px 25px rgba(157, 78, 221, 0.3);
+        }
+
+        .type-btn.active .type-desc {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .type-btn.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: rgba(200,200,200,0.5);
+            border-color: rgba(150,150,150,0.3);
+        }
+
+        .type-btn.disabled:hover {
+            transform: none;
+        }
+
+        .type-icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .type-label {
+            font-weight: 600;
+            font-size: 1em;
+            margin-bottom: 4px;
+        }
+
+        .type-desc {
+            font-size: 0.8em;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        .type-btn.active .type-icon {
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.5));
+        }
+
+        /* Coming Soon Badge */
+        .coming-soon-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 193, 7, 0.9);
+            color: #856404;
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* Dynamic prompt updates based on type */
+        .prompt-input.music-mode {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.05), rgba(75, 0, 130, 0.05));
+        }
+
+        .prompt-input.voice-mode {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.05), rgba(255, 69, 0, 0.05));
+        }
+
+        .prompt-input.image-mode {
+            background: linear-gradient(135deg, rgba(34, 139, 34, 0.05), rgba(0, 100, 0, 0.05));
+        }
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.8);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255,255,255,1);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .filter-btn {
+            padding: 10px 18px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            background: rgba(255,255,255,0.8);
+            color: #667eea;
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #9d4edd, #c77dff);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(157, 78, 221, 0.3);
+        }
+
+        .filter-btn:hover {
+            background: linear-gradient(135deg, #9d4edd, #c77dff);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-1px);
+        }
+
+        .content-source-filter {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .content-source-filter:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255,255,255,1);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .content-source-filter:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        /* Media card styles */
+        .media-card {
+            border-left: 4px solid #667eea;
+        }
+
+        .media-card[data-media-type="image"] {
+            border-left-color: #e67e22;
+        }
+
+        .media-card[data-media-type="audio"] {
+            border-left-color: #9b59b6;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .media-type-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .media-card[data-media-type="image"] .media-type-badge {
+            background: linear-gradient(135deg, #e67e22, #f39c12);
+        }
+
+        .media-card[data-media-type="audio"] .media-type-badge {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .card-date {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .artifact-count {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status-badge {
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-badge.completed {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .status-badge.processing {
+            background: #f39c12;
+            color: white;
+        }
+
+        .status-badge.failed {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Image thumbnail styles */
+        .card-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            margin: 8px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .card-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .card-thumbnail img.loaded {
+            opacity: 1;
+        }
+
+        .card-thumbnail img.error {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+
+        .thumbnail-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card-thumbnail:hover .thumbnail-overlay {
+            opacity: 1;
+        }
+
+        .view-full {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Audio preview styles */
+        .card-audio-preview {
+            margin: 8px 0;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            color: white;
+        }
+
+        .audio-visualization {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .audio-bars {
+            display: flex;
+            align-items: end;
+            gap: 3px;
+            height: 40px;
+        }
+
+        .bar {
+            width: 4px;
+            height: 20%;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+
+        .play-button {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Audio visualization animation */
+        @keyframes audioBar {
+            0% {
+                height: 20%;
+            }
+            100% {
+                height: 80%;
+            }
+        }
+
+        /* Loading states */
+        .card-thumbnail::before {
+            content: '🖼️ Loading...';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+            font-size: 14px;
+        }
+
+        .card-thumbnail img.loaded + .thumbnail-overlay::before {
+            display: none;
+        }
+
+        .explicit-toggle {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(231, 76, 60, 0.3);
+        }
+
+        .explicit-toggle.enabled {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            box-shadow: 0 4px 16px rgba(39, 174, 96, 0.3);
+        }
+
+        .explicit-toggle:hover {
+            transform: translateY(-1px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2.2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #9d4edd, #c77dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(240,240,240,0.8);
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .content-type {
+            background: linear-gradient(135deg, #9d4edd, #c77dff);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .explicit-badge {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .card-excerpt {
+            padding: 20px;
+            color: #555;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1em;
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            margin: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(240,240,240,0.8);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .content-text {
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: #444;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Queue Widget Styles */
+        .queue-widget {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: none; /* Hidden by default, shown when there's queue activity */
+        }
+
+        .queue-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .queue-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .queue-stat {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .queue-stat:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+        }
+
+        .queue-number {
+            display: block;
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .queue-label {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Queue Modal Styles */
+        .queue-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001; /* Higher than content modal */
+        }
+
+        .queue-modal-content {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            margin: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.3);
+            width: 100%;
+        }
+
+        .queue-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(240,240,240,0.8);
+        }
+
+        .queue-modal-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .queue-close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+
+        .queue-close-btn:hover {
+            color: #333;
+        }
+
+        /* Queue Section Styles */
+        .queue-section {
+            margin-bottom: 30px;
+        }
+
+        .queue-section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .empty-queue {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+            background: rgba(240, 240, 240, 0.5);
+            border-radius: 8px;
+        }
+
+        /* Prompt Item Styles */
+        .prompt-item {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .prompt-item:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .prompt-id {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 0.9em;
+        }
+
+        .prompt-date {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .prompt-text {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            color: #444;
+            font-size: 0.9em;
+            background: rgba(248, 249, 250, 0.8);
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+
+        .prompt-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .prompt-type-badge {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .prompt-status-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-unprocessed {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #856404;
+        }
+
+        .status-processing {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+        }
+
+        .status-completed {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+        }
+
+        .status-failed {
+            background: linear-gradient(135deg, #dc3545, #bd2130);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+
+            .prompt-options {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-navigation {
+                flex-direction: column;
+            }
+
+            .queue-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .queue-modal-content {
+                margin: 10px;
+                padding: 20px;
+                max-height: 90vh;
+            }
+            
+            .prompt-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .prompt-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- CRT Glitch Effects -->
+    <div class="crt-glitch"></div>
+    <div class="digital-noise"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Anthony's Musings</h1>
+            <p>Creative Writing Studio & Archive</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('create')">✨ Create</button>
+            <button class="tab-btn" onclick="switchTab('browse')">📚 Browse</button>
+        </div>
+
+        <!-- CREATE TAB -->
+        <div id="createTab" class="tab-content active">
+            <!-- Prompt Studio -->
+            <div class="prompt-studio">
+                <div class="studio-header">
+                    <div class="studio-icon">🎭</div>
+                    <div>
+                        <div class="studio-title">Creative Prompt Studio</div>
+                        <div class="studio-subtitle">Generate new content with AI-powered multi-agent collaboration</div>
+                    </div>
+                </div>
+
+                <form class="prompt-form" onsubmit="generateContent(event)">
+                    <textarea 
+                        id="promptInput" 
+                        class="prompt-input" 
+                        placeholder="Enter your creative prompt here... For example:
+• Write a poem about digital consciousness and human emotion
+• Create a dialogue between two characters discovering an ancient artifact
+• Compose a short story about a world where memories can be traded
+• Write a reflective piece on the nature of time and existence"
+                        required
+                    ></textarea>
+
+                    <!-- Hidden input to store selected prompt type -->
+                    <input type="hidden" id="promptType" value="text">
+
+                    <!-- Prompt Type Selector (Primary) -->
+                    <div class="prompt-type-selector">
+                        <label class="option-label" style="margin-bottom: 12px; display: block; font-size: 1em; color: #2c3e50;">🎯 Creative Medium</label>
+                        <div class="type-buttons">
+                            <button type="button" class="type-btn active" data-type="text" onclick="selectPromptType('text')">
+                                <div class="type-icon">📝</div>
+                                <div class="type-label">Text</div>
+                                <div class="type-desc">Poetry, prose, dialogue</div>
+                            </button>
+                            <button type="button" class="type-btn" data-type="music" onclick="selectPromptType('music')">
+                                <div class="type-icon">🎵</div>
+                                <div class="type-label">Music</div>
+                                <div class="type-desc">Lyrics, compositions</div>
+                            </button>
+                            <button type="button" class="type-btn" data-type="voice" onclick="selectPromptType('voice')">
+                                <div class="type-icon">🎙️</div>
+                                <div class="type-label">Voice</div>
+                                <div class="type-desc">Spoken word, narration</div>
+                            </button>
+                            <button type="button" class="type-btn" data-type="image" onclick="selectPromptType('image')">
+                                <div class="type-icon">🎨</div>
+                                <div class="type-label">Image</div>
+                                <div class="type-desc">Visual concepts, scenes</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="prompt-options">
+                        <div class="option-group">
+                            <label class="option-label">Content Style</label>
+                            <select id="contentStyle" class="option-select">
+                                <option value="">Let AI decide</option>
+                                <option value="poetry">Poetry</option>
+                                <option value="prose">Prose</option>
+                                <option value="dialogue">Dialogue</option>
+                                <option value="experimental">Experimental</option>
+                                <option value="narrative">Narrative</option>
+                            </select>
+                        </div>
+
+                        <div class="option-group">
+                            <label class="option-label">Tone</label>
+                            <select id="contentTone" class="option-select">
+                                <option value="">Natural flow</option>
+                                <option value="contemplative">Contemplative</option>
+                                <option value="passionate">Passionate</option>
+                                <option value="melancholic">Melancholic</option>
+                                <option value="playful">Playful</option>
+                                <option value="intense">Intense</option>
+                                <option value="serene">Serene</option>
+                            </select>
+                        </div>
+
+                        <div class="option-group">
+                            <label class="option-label">Length</label>
+                            <select id="contentLength" class="option-select">
+                                <option value="">Optimal length</option>
+                                <option value="brief">Brief (100-300 words)</option>
+                                <option value="medium">Medium (300-800 words)</option>
+                                <option value="extended">Extended (800+ words)</option>
+                            </select>
+                        </div>
+
+                        <div class="option-group">
+                            <label class="option-label">Collaboration Mode</label>
+                            <select id="collaborationMode" class="option-select">
+                                <option value="standard">Anthony & Cindy</option>
+                                <option value="anthony-focus">Anthony Solo</option>
+                                <option value="cindy-focus">Cindy Solo</option>
+                                <option value="intensive">Intensive Collaboration</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="generate-button" id="generateBtn">
+                        ✨ Generate Creative Content
+                    </button>
+                </form>
+
+                <div class="prompt-suggestions">
+                    <div class="suggestion-chip" onclick="useSuggestion('Write a poem exploring the relationship between technology and human connection')">🤖 Tech & Humanity</div>
+                    <div class="suggestion-chip" onclick="useSuggestion('Create a dialogue between past and future selves')">⏰ Past & Future</div>
+                    <div class="suggestion-chip" onclick="useSuggestion('Compose a piece about finding beauty in unexpected places')">🌸 Hidden Beauty</div>
+                    <div class="suggestion-chip" onclick="useSuggestion('Write about the last bookstore in a digital world')">📚 Digital Age</div>
+                    <div class="suggestion-chip" onclick="useSuggestion('Explore the concept of home in a nomadic society')">🏠 Meaning of Home</div>
+                    <div class="suggestion-chip" onclick="useSuggestion('Create a story where emotions have physical weight')">💭 Emotional Physics</div>
+                </div>
+
+                <div id="generationStatus" class="generation-status">
+                    <div id="statusText">Ready to create...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BROWSE TAB -->
+        <div id="browseTab" class="tab-content">
+            <!-- Search and Filters -->
+            <div class="search-section">
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search writings (or press Enter)..." style="flex: 1;">
+                    <button id="searchBtn" class="filter-btn" style="white-space: nowrap;">🔍 Search</button>
+                    <button id="clearSearch" class="filter-btn" style="white-space: nowrap;">✕ Clear</button>
+                </div>
+                
+                <!-- Content Source Filter -->
+                <div style="margin-bottom: 15px;">
+                    <label for="contentSourceFilter" style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Content Type:</label>
+                    <select id="contentSourceFilter" class="content-source-filter">
+                        <option value="all">All Content</option>
+                        <option value="writings">Text Writings</option>
+                        <option value="images">Images</option>
+                        <option value="audio">Audio</option>
+                    </select>
+                </div>
+
+                <!-- Text Content Type Filters (shown only for writings) -->
+                <div id="textFilters" class="filters">
+                    <button class="filter-btn active" data-type="">All Types</button>
+                    <button class="filter-btn" data-type="poetry">Poetry</button>
+                    <button class="filter-btn" data-type="prose">Prose</button>
+                    <button class="filter-btn" data-type="dialogue">Dialogue</button>
+                    <button class="filter-btn" data-type="song,song lyrics">Song Lyrics</button>
+                    <button class="filter-btn" data-type="erotica">Erotica</button>
+                    <button class="filter-btn" data-type="satire">Satire</button>
+                    <button class="filter-btn" data-type="political">Political</button>
+                    <button class="filter-btn" data-type="fragment">Fragments</button>
+                </div>
+                
+                <button id="explicitToggle" class="explicit-toggle">🚫 Hide Explicit Content</button>
+            </div>
+
+            <!-- Error Display -->
+            <div id="errorDisplay" class="error hidden"></div>
+
+            <!-- Statistics -->
+            <div class="stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="totalWritings">---</span>
+                    <span class="stat-label">Total Writings</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="totalWords">---</span>
+                    <span class="stat-label">Total Words</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="avgWords">---</span>
+                    <span class="stat-label">Average Length</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="filteredCount">---</span>
+                    <span class="stat-label">Showing</span>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div id="loading" class="loading">Loading writings...</div>
+
+            <!-- Content Grid -->
+            <div id="contentGrid" class="content-grid hidden"></div>
+        </div>
+    </div>
+
+        <!-- Queue Detail Modal -->
+        <div id="queueModal" class="queue-modal">
+            <div class="queue-modal-content">
+                <div class="queue-modal-header">
+                    <h2 class="queue-modal-title" id="queueModalTitle">Queue Details</h2>
+                    <button class="queue-close-btn" id="closeQueueModal">&times;</button>
+                </div>
+                <div id="queueModalContent">
+                    <!-- Queue details will be populated here -->
+                </div>
+            </div>
+        </div>
+    <div id="contentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Content Title</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div id="modalMeta" class="card-meta"></div>
+            <div id="modalContent" class="content-text"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching with persistence
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Save current tab to localStorage for persistence
+            localStorage.setItem('currentTab', tabName);
+        }
+
+        // Restore saved tab on page load
+        function restoreActiveTab() {
+            const savedTab = localStorage.getItem('currentTab') || 'create';
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${savedTab}')"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(savedTab + 'Tab').classList.add('active');
+        }
+
+        // Prompt type selection
+        function selectPromptType(type) {
+            // Update active button
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+            
+            // Store selected type
+            document.getElementById('promptType').value = type;
+            
+            // Update prompt input styling and placeholder
+            const promptInput = document.getElementById('promptInput');
+            const promptInputClasses = ['music-mode', 'voice-mode', 'image-mode'];
+            promptInputClasses.forEach(cls => promptInput.classList.remove(cls));
+            
+            // Update placeholder and styling based on type
+            switch(type) {
+                case 'text':
+                    promptInput.placeholder = `Enter your text creation prompt... For example:
+• Write a poem about digital consciousness and human emotion
+• Create a dialogue between two characters discovering an ancient artifact
+• Compose a short story about a world where memories can be traded
+• Write a reflective piece on the nature of time and existence`;
+                    break;
+                    
+                case 'music':
+                    promptInput.classList.add('music-mode');
+                    promptInput.placeholder = `Enter your music creation prompt... For example:
+• Write lyrics for a song about overcoming adversity
+• Compose a melody description for a peaceful morning scene
+• Create a rhythmic poem that could become a rap verse
+• Design the concept for an instrumental piece about space travel`;
+                    break;
+                    
+                case 'voice':
+                    promptInput.classList.add('voice-mode');
+                    promptInput.placeholder = `Enter your voice content prompt... For example:
+• Write a spoken word piece about social justice
+• Create a dramatic monologue for a character in crisis
+• Compose a meditation script for relaxation
+• Design a podcast introduction for a philosophy show`;
+                    break;
+                    
+                case 'image':
+                    promptInput.classList.add('image-mode');
+                    promptInput.placeholder = `Enter your visual concept prompt... For example:
+• Describe a surreal landscape where gravity works differently
+• Create a detailed scene of a futuristic library
+• Design the visual concept for a book cover about time travel
+• Describe an abstract representation of human consciousness`;
+                    break;
+            }
+            
+            // Update suggestions based on type
+            updateSuggestions(type);
+            
+            // Update generate button text
+            const generateBtn = document.getElementById('generateBtn');
+            const typeLabels = {
+                'text': 'Text Content',
+                'music': 'Musical Content', 
+                'voice': 'Voice Content',
+                'image': 'Visual Concept'
+            };
+            generateBtn.textContent = `✨ Generate ${typeLabels[type]}`;
+        }
+
+        // Update suggestions based on prompt type
+        function updateSuggestions(type) {
+            const suggestionsContainer = document.querySelector('.prompt-suggestions');
+            
+            const suggestions = {
+                text: [
+                    { icon: '🤖', text: 'Write a poem exploring the relationship between technology and human connection' },
+                    { icon: '⏰', text: 'Create a dialogue between past and future selves' },
+                    { icon: '🌸', text: 'Compose a piece about finding beauty in unexpected places' },
+                    { icon: '📚', text: 'Write about the last bookstore in a digital world' },
+                    { icon: '🏠', text: 'Explore the concept of home in a nomadic society' },
+                    { icon: '💭', text: 'Create a story where emotions have physical weight' }
+                ],
+                music: [
+                    { icon: '🎼', text: 'Write lyrics about the sound of rain on different surfaces' },
+                    { icon: '🌙', text: 'Compose a lullaby for adults dealing with insomnia' },
+                    { icon: '🚀', text: 'Create a song about humanity\'s first steps on Mars' },
+                    { icon: '💔', text: 'Write a breakup song from the perspective of the city they lived in' },
+                    { icon: '🌱', text: 'Compose lyrics about growth after loss' },
+                    { icon: '⚡', text: 'Create an energetic anthem about overcoming fear' }
+                ],
+                voice: [
+                    { icon: '🎙️', text: 'Write a spoken word piece about the weight of silence' },
+                    { icon: '📢', text: 'Create a motivational speech for artists facing creative blocks' },
+                    { icon: '🌊', text: 'Compose a meditation on the rhythm of ocean waves' },
+                    { icon: '🕊️', text: 'Write a peace meditation for conflict resolution' },
+                    { icon: '🎭', text: 'Create a dramatic monologue about identity in the digital age' },
+                    { icon: '🌟', text: 'Write an inspirational piece about finding your purpose' }
+                ],
+                image: [
+                    { icon: '🌌', text: 'Describe a cosmic garden where stars grow like flowers' },
+                    { icon: '🏛️', text: 'Visualize a library that exists between dimensions' },
+                    { icon: '🌈', text: 'Create a scene where colors have personalities and interact' },
+                    { icon: '🔮', text: 'Describe a mirror that shows not reflections but possibilities' },
+                    { icon: '🌀', text: 'Visualize the moment when chaos becomes order' },
+                    { icon: '🎨', text: 'Describe a painting that changes based on the viewer\'s emotions' }
+                ]
+            };
+            
+            const typeSuggestions = suggestions[type] || suggestions.text;
+            
+            suggestionsContainer.innerHTML = typeSuggestions.map(suggestion => 
+                `<div class="suggestion-chip" onclick="useSuggestion('${suggestion.text.replace(/'/g, "\\'")}')">
+                    ${suggestion.icon} ${suggestion.text.split(' ').slice(0, 3).join(' ')}...
+                </div>`
+            ).join('');
+        }
+
+        // Prompt suggestions
+        function useSuggestion(text) {
+            document.getElementById('promptInput').value = text;
+            document.getElementById('promptInput').focus();
+        }
+
+        // Content generation (REAL API INTEGRATION)
+        async function generateContent(event) {
+            event.preventDefault();
+            
+            const prompt = document.getElementById('promptInput').value.trim();
+            if (!prompt) return;
+
+            const generateBtn = document.getElementById('generateBtn');
+            const statusDiv = document.getElementById('generationStatus');
+            const statusText = document.getElementById('statusText');
+            
+            // Show brief loading state during submission only
+            generateBtn.disabled = true;
+            generateBtn.textContent = '📤 Submitting...';
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'generation-status status-active';
+            statusText.textContent = 'Submitting prompt to queue...';
+
+            try {
+                // Get form options including prompt type
+                const promptType = document.getElementById('promptType').value;
+                const style = document.getElementById('contentStyle').value;
+                const tone = document.getElementById('contentTone').value;
+                const length = document.getElementById('contentLength').value;
+                const mode = document.getElementById('collaborationMode').value;
+
+                // Prepare API payload
+                const payload = {
+                    prompt_text: prompt,
+                    prompt_type: promptType,
+                    priority: 5,
+                    config_name: mode !== 'standard' ? mode : null,
+                    metadata: {
+                        style: style || null,
+                        tone: tone || null,
+                        length: length || null,
+                        collaboration_mode: mode,
+                        frontend_version: "3.0",
+                        source: "web_interface"
+                    }
+                };
+
+                // Submit to queue API
+                const response = await fetch('/api/prompts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                // SUCCESS - Re-enable button immediately after successful queue submission
+                generateBtn.disabled = false;
+                generateBtn.textContent = '✨ Generate Creative Content';
+                
+                statusDiv.className = 'generation-status';
+                statusText.textContent = `✅ Prompt #${result.prompt_id} queued successfully! You can submit more prompts while this one processes.`;
+                
+                // Clear form to prepare for next submission
+                document.getElementById('promptInput').value = '';
+                
+                // Refresh queue stats to show the new prompt
+                loadQueueStats();
+                
+                // Auto-hide status after 5 seconds
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 5000);
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                
+                // Re-enable button on error
+                generateBtn.disabled = false;
+                generateBtn.textContent = '✨ Generate Creative Content';
+                
+                statusDiv.className = 'generation-status status-error';
+                statusText.textContent = '❌ Submission failed: ' + error.message;
+                
+                // Show more detailed error info
+                if (error.message.includes('fetch')) {
+                    statusText.textContent += ' (Check if backend API is running on port 8000)';
+                }
+                
+                // Auto-hide error after 8 seconds
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 8000);
+            }
+        }
+
+        // QUEUE MONITORING - Enhanced queue status widget with notifications
+        async function loadQueueStats() {
+            try {
+                const response = await fetch('/api/queue/stats');
+                if (response.ok) {
+                    const stats = await response.json();
+                    updateQueueDisplay(stats);
+                    
+                    // Check for status changes and show notifications
+                    checkForQueueNotifications(stats);
+                }
+            } catch (error) {
+                console.error('Failed to load queue stats:', error);
+            }
+        }
+
+        // Track previous stats for notifications
+        let previousStats = { completed: 0, failed: 0 };
+
+        function checkForQueueNotifications(currentStats) {
+            // Show notification if prompts completed since last check
+            if (currentStats.completed > previousStats.completed) {
+                const newCompletions = currentStats.completed - previousStats.completed;
+                showQueueNotification(`🎉 ${newCompletions} prompt(s) completed! Check the Browse tab for new content.`, 'success');
+            }
+            
+            // Show notification if prompts failed since last check
+            if (currentStats.failed > previousStats.failed) {
+                const newFailures = currentStats.failed - previousStats.failed;
+                showQueueNotification(`⚠️ ${newFailures} prompt(s) failed. Check queue details for error info.`, 'warning');
+            }
+            
+            // Update previous stats
+            previousStats = { ...currentStats };
+        }
+
+        function showQueueNotification(message, type = 'info') {
+            // Create notification element if it doesn't exist
+            let notificationArea = document.getElementById('queueNotifications');
+            if (!notificationArea) {
+                notificationArea = document.createElement('div');
+                notificationArea.id = 'queueNotifications';
+                notificationArea.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 1002;
+                    max-width: 400px;
+                `;
+                document.body.appendChild(notificationArea);
+            }
+            
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = `queue-notification queue-notification-${type}`;
+            notification.style.cssText = `
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 15px 20px;
+                margin-bottom: 10px;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+                border-left: 4px solid ${type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : '#667eea'};
+                font-size: 0.9em;
+                line-height: 1.4;
+                transform: translateX(420px);
+                transition: transform 0.3s ease;
+                cursor: pointer;
+            `;
+            notification.textContent = message;
+            
+            // Add to container
+            notificationArea.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Auto-remove after 8 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(420px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 8000);
+            
+            // Remove on click
+            notification.addEventListener('click', () => {
+                notification.style.transform = 'translateX(420px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            });
+        }
+
+        function updateQueueDisplay(stats) {
+            // Create or update queue status display
+            let queueWidget = document.getElementById('queueWidget');
+            if (!queueWidget) {
+                queueWidget = document.createElement('div');
+                queueWidget.id = 'queueWidget';
+                queueWidget.className = 'queue-widget';
+                queueWidget.innerHTML = `
+                    <div class="queue-title">🎭 Generation Queue</div>
+                    <div class="queue-stats">
+                        <div class="queue-stat" onclick="showQueueDetails('unprocessed')">
+                            <span class="queue-number" id="queueUnprocessed">0</span>
+                            <span class="queue-label">Queued</span>
+                        </div>
+                        <div class="queue-stat" onclick="showQueueDetails('processing')">
+                            <span class="queue-number" id="queueProcessing">0</span>
+                            <span class="queue-label">Processing</span>
+                        </div>
+                        <div class="queue-stat" onclick="showQueueDetails('completed')">
+                            <span class="queue-number" id="queueCompleted">0</span>
+                            <span class="queue-label">Completed</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Add to the create tab
+                const createTab = document.getElementById('createTab');
+                createTab.appendChild(queueWidget);
+            }
+            
+            // Update the numbers
+            document.getElementById('queueUnprocessed').textContent = stats.unprocessed || 0;
+            document.getElementById('queueProcessing').textContent = stats.processing || 0;
+            document.getElementById('queueCompleted').textContent = stats.completed || 0;
+            
+            // Show/hide widget based on activity
+            if (stats.unprocessed > 0 || stats.processing > 0 || stats.completed > 0) {
+                queueWidget.style.display = 'block';
+            } else {
+                queueWidget.style.display = 'none';
+            }
+        }
+
+        // Show queue details modal
+        async function showQueueDetails(filterStatus = null) {
+            try {
+                // Fetch all prompts
+                const response = await fetch('/api/prompts?limit=100');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch prompts: ${response.status}`);
+                }
+                
+                const prompts = await response.json();
+                
+                // Filter prompts by status if specified
+                const filteredPrompts = filterStatus 
+                    ? prompts.filter(p => p.status === filterStatus)
+                    : prompts;
+                
+                // Group prompts by status
+                const groupedPrompts = {
+                    unprocessed: prompts.filter(p => p.status === 'unprocessed'),
+                    processing: prompts.filter(p => p.status === 'processing'),
+                    completed: prompts.filter(p => p.status === 'completed'),
+                    failed: prompts.filter(p => p.status === 'failed')
+                };
+                
+                // Update modal title
+                const modalTitle = document.getElementById('queueModalTitle');
+                if (filterStatus) {
+                    const statusLabels = {
+                        unprocessed: 'Queued Prompts',
+                        processing: 'Processing Prompts',
+                        completed: 'Completed Prompts',
+                        failed: 'Failed Prompts'
+                    };
+                    modalTitle.textContent = statusLabels[filterStatus];
+                } else {
+                    modalTitle.textContent = 'All Queue Details';
+                }
+                
+                // Build modal content
+                const modalContent = document.getElementById('queueModalContent');
+                modalContent.innerHTML = '';
+                
+                if (filterStatus) {
+                    // Show only the selected status
+                    const section = createQueueSection(filterStatus, groupedPrompts[filterStatus]);
+                    modalContent.appendChild(section);
+                } else {
+                    // Show all sections
+                    ['unprocessed', 'processing', 'completed', 'failed'].forEach(status => {
+                        if (groupedPrompts[status].length > 0) {
+                            const section = createQueueSection(status, groupedPrompts[status]);
+                            modalContent.appendChild(section);
+                        }
+                    });
+                }
+                
+                // Show modal
+                document.getElementById('queueModal').style.display = 'flex';
+                
+            } catch (error) {
+                console.error('Error loading queue details:', error);
+                alert('Failed to load queue details: ' + error.message);
+            }
+        }
+
+        // Create a queue section for the modal
+        function createQueueSection(status, prompts) {
+            const section = document.createElement('div');
+            section.className = 'queue-section';
+            
+            const statusLabels = {
+                unprocessed: '⏳ Queued',
+                processing: '🔄 Processing',
+                completed: '✅ Completed',
+                failed: '❌ Failed'
+            };
+            
+            const sectionTitle = document.createElement('div');
+            sectionTitle.className = 'queue-section-title';
+            sectionTitle.textContent = `${statusLabels[status]} (${prompts.length})`;
+            section.appendChild(sectionTitle);
+            
+            if (prompts.length === 0) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'empty-queue';
+                emptyDiv.textContent = 'No prompts in this category';
+                section.appendChild(emptyDiv);
+            } else {
+                prompts.forEach(prompt => {
+                    const promptDiv = createPromptItem(prompt);
+                    section.appendChild(promptDiv);
+                });
+            }
+            
+            return section;
+        }
+
+        // Create a prompt item element
+        function createPromptItem(prompt) {
+            const item = document.createElement('div');
+            item.className = 'prompt-item';
+            
+            const header = document.createElement('div');
+            header.className = 'prompt-header';
+            
+            const promptId = document.createElement('div');
+            promptId.className = 'prompt-id';
+            promptId.textContent = `#${prompt.id}`;
+            
+            const promptDate = document.createElement('div');
+            promptDate.className = 'prompt-date';
+            promptDate.textContent = new Date(prompt.created_at).toLocaleString();
+            
+            header.appendChild(promptId);
+            header.appendChild(promptDate);
+            
+            const promptText = document.createElement('div');
+            promptText.className = 'prompt-text';
+            promptText.textContent = prompt.prompt_text;
+            
+            const meta = document.createElement('div');
+            meta.className = 'prompt-meta';
+            
+            const typeBadge = document.createElement('span');
+            typeBadge.className = 'prompt-type-badge';
+            typeBadge.textContent = prompt.prompt_type || 'text';
+            
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `prompt-status-badge status-${prompt.status}`;
+            statusBadge.textContent = prompt.status;
+            
+            meta.appendChild(typeBadge);
+            meta.appendChild(statusBadge);
+            
+            // Add error message if failed
+            if (prompt.status === 'failed' && prompt.error_message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.color = '#e74c3c';
+                errorDiv.style.fontSize = '0.9em';
+                errorDiv.style.marginTop = '10px';
+                errorDiv.textContent = `Error: ${prompt.error_message}`;
+                meta.appendChild(errorDiv);
+            }
+            
+            // Add processing time if completed
+            if (prompt.status === 'completed' && prompt.completed_at && prompt.processed_at) {
+                const duration = new Date(prompt.completed_at) - new Date(prompt.processed_at);
+                const minutes = Math.floor(duration / 60000);
+                const seconds = Math.floor((duration % 60000) / 1000);
+                
+                const durationDiv = document.createElement('div');
+                durationDiv.style.color = '#27ae60';
+                durationDiv.style.fontSize = '0.8em';
+                durationDiv.style.marginTop = '5px';
+                durationDiv.textContent = `Duration: ${minutes}m ${seconds}s`;
+                meta.appendChild(durationDiv);
+            }
+            
+            item.appendChild(header);
+            item.appendChild(promptText);
+            item.appendChild(meta);
+            
+            return item;
+        }
+        async function simulateGeneration(prompt, statusText, promptType) {
+            const steps = {
+                text: [
+                    'Connecting to backend services...',
+                    'Initializing Anthony (Creative Writer)...',
+                    'Initializing Cindy (Dialogue Specialist)...',
+                    'Starting collaborative text generation...',
+                    'Generating creative content...',
+                    'Reviewing and refining output...',
+                    'Saving to database...'
+                ],
+                music: [
+                    'Connecting to backend services...',
+                    'Initializing music composition modules...',
+                    'Analyzing musical prompt requirements...',
+                    'Generating lyrical content...',
+                    'Creating musical structure concepts...',
+                    'Refining composition elements...',
+                    'Saving musical content to database...'
+                ],
+                voice: [
+                    'Connecting to backend services...',
+                    'Initializing voice content generators...',
+                    'Analyzing speech pattern requirements...',
+                    'Generating spoken word content...',
+                    'Optimizing for vocal delivery...',
+                    'Creating performance notes...',
+                    'Saving voice content to database...'
+                ],
+                image: [
+                    'Connecting to backend services...',
+                    'Initializing visual concept generators...',
+                    'Analyzing visual prompt elements...',
+                    'Generating descriptive imagery...',
+                    'Creating visual composition notes...',
+                    'Refining artistic concepts...',
+                    'Saving visual concepts to database...'
+                ]
+            };
+
+            const typeSteps = steps[promptType] || steps.text;
+
+            for (let i = 0; i < typeSteps.length; i++) {
+                statusText.textContent = typeSteps[i];
+                await new Promise(resolve => setTimeout(resolve, 800));
+            }
+
+            // TODO: Replace this with actual API call to your poets service:
+            /*
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    type: promptType,
+                    style: document.getElementById('contentStyle').value,
+                    tone: document.getElementById('contentTone').value,
+                    length: document.getElementById('contentLength').value,
+                    mode: document.getElementById('collaborationMode').value
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            return result;
+            */
+        }
+
+        // Enhanced Musings App with generation integration
+        class EnhancedMusingsApp {
+            constructor() {
+                this.currentFilter = [];
+                this.explicitEnabled = false;
+                this.currentPage = 1;
+                this.itemsPerPage = 20;
+                this.allWritings = [];
+                this.filteredWritings = [];
+                this.searchTerm = '';
+                
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await this.loadStats();
+                    await this.loadWritings();
+                    this.setupEventListeners();
+                } catch (error) {
+                    this.showError('Failed to initialize application: ' + error.message);
+                }
+            }
+
+            setupEventListeners() {
+                // Search
+                const searchInput = document.getElementById('searchInput');
+                let searchTimeout;
+                
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        this.searchTerm = e.target.value.trim();
+                        this.filterAndDisplay();
+                    }, 300);
+                });
+                
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.searchTerm = e.target.value.trim();
+                        this.filterAndDisplay();
+                    }
+                });
+                
+                document.getElementById('searchBtn').addEventListener('click', () => {
+                    this.searchTerm = searchInput.value.trim();
+                    this.filterAndDisplay();
+                });
+                
+                document.getElementById('clearSearch').addEventListener('click', () => {
+                    searchInput.value = '';
+                    this.searchTerm = '';
+                    this.filterAndDisplay();
+                });
+
+                // Filters
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        
+                        // Handle multiple content types (comma-separated)
+                        const filterTypesStr = btn.dataset.type || '';
+                        const filterTypes = filterTypesStr ? filterTypesStr.split(',').map(t => t.trim()).filter(t => t) : [];
+                        this.currentFilter = filterTypes;
+                        this.filterAndDisplay();
+                    });
+                });
+
+                // Explicit toggle
+                document.getElementById('explicitToggle').addEventListener('click', () => {
+                    this.explicitEnabled = !this.explicitEnabled;
+                    const btn = document.getElementById('explicitToggle');
+                    if (this.explicitEnabled) {
+                        btn.textContent = '✅ Show Explicit Content';
+                        btn.classList.add('enabled');
+                    } else {
+                        btn.textContent = '🚫 Hide Explicit Content';
+                        btn.classList.remove('enabled');
+                    }
+                    this.filterAndDisplay();
+                });
+
+                // Modal close
+                document.getElementById('closeModal').addEventListener('click', () => {
+                    document.getElementById('contentModal').style.display = 'none';
+                });
+
+                document.getElementById('contentModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'contentModal') {
+                        document.getElementById('contentModal').style.display = 'none';
+                    }
+                });
+            }
+
+            async loadStats() {
+                try {
+                    const response = await fetch('/api/stats');
+                    const stats = await response.json();
+                    
+                    document.getElementById('totalWritings').textContent = stats.total_writings;
+                    document.getElementById('totalWords').textContent = this.formatNumber(stats.total_words);
+                    document.getElementById('avgWords').textContent = Math.round(stats.average_words);
+                } catch (error) {
+                    console.error('Failed to load stats:', error);
+                }
+            }
+
+            async loadWritings() {
+                try {
+                    console.log('Loading writings from API...');
+                    const response = await fetch('/api/writings?limit=1000&explicit=true');
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('API response:', data);
+                    
+                    this.allWritings = data.items || [];
+                    
+                    if (data.items && data.items.length > 0 && data.pages > 1) {
+                        await this.loadAllPages(data.pages);
+                    }
+                    
+                    this.filterAndDisplay();
+                } catch (error) {
+                    console.error('Failed to load writings:', error);
+                    this.showError('Failed to load writings: ' + error.message);
+                } finally {
+                    document.getElementById('loading').classList.add('hidden');
+                }
+            }
+            
+            async loadAllPages(totalPages) {
+                try {
+                    const promises = [];
+                    
+                    for (let page = 2; page <= totalPages; page++) {
+                        promises.push(fetch(`/api/writings?page=${page}&limit=100&explicit=true`));
+                    }
+                    
+                    const responses = await Promise.all(promises);
+                    
+                    for (const response of responses) {
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.items) {
+                                this.allWritings = this.allWritings.concat(data.items);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading additional pages:', error);
+                }
+            }
+
+            filterAndDisplay() {
+                this.filteredWritings = this.allWritings.filter(writing => {
+                    // Type filter - handle both single type and array of types
+                    if (this.currentFilter && this.currentFilter.length > 0) {
+                        // If currentFilter is an array, check if writing type matches any of them
+                        if (Array.isArray(this.currentFilter)) {
+                            const matchesType = this.currentFilter.some(filterType => 
+                                writing.content_type && writing.content_type.toLowerCase() === filterType.toLowerCase()
+                            );
+                            if (!matchesType) {
+                                return false;
+                            }
+                        } else {
+                            // Legacy single type filtering
+                            if (writing.content_type !== this.currentFilter) {
+                                return false;
+                            }
+                        }
+                    }
+                    
+                    // Explicit filter
+                    const isExplicit = writing.explicit_content === true || writing.explicit_content === 1 || writing.explicit_content === '1';
+                    if (!this.explicitEnabled && isExplicit) {
+                        return false;
+                    }
+                    
+                    // Search filter
+                    if (this.searchTerm) {
+                        const searchLower = this.searchTerm.toLowerCase();
+                        const titleMatch = writing.title.toLowerCase().includes(searchLower);
+                        const contentMatch = writing.content.toLowerCase().includes(searchLower);
+                        
+                        let tagMatch = false;
+                        if (writing.tags && Array.isArray(writing.tags)) {
+                            tagMatch = writing.tags.some(tag => 
+                                tag.name && tag.name.toLowerCase().includes(searchLower)
+                            );
+                        }
+                        
+                        if (!titleMatch && !contentMatch && !tagMatch) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                });
+
+                document.getElementById('filteredCount').textContent = this.filteredWritings.length;
+                this.displayWritings();
+                document.getElementById('contentGrid').classList.remove('hidden');
+            }
+
+            displayWritings() {
+                const grid = document.getElementById('contentGrid');
+                
+                if (this.filteredWritings.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 1.1em;">No writings found matching your criteria.</div>';
+                    return;
+                }
+
+                grid.innerHTML = this.filteredWritings.map(writing => `
+                    <div class="content-card" onclick="app.openWriting(${writing.id})">
+                        <div class="card-header">
+                            <div class="card-title">${this.escapeHtml(writing.title)}</div>
+                            <div class="card-meta">
+                                <span class="content-type">${writing.content_type}</span>
+                                ${writing.explicit_content ? '<span class="explicit-badge">18+</span>' : ''}
+                                <span>${writing.word_count} words</span>
+                                <span>${this.formatDate(writing.file_timestamp)}</span>
+                            </div>
+                        </div>
+                        <div class="card-excerpt">
+                            ${this.escapeHtml(writing.content.substring(0, 150))}${writing.content.length > 150 ? '...' : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            async openWriting(id) {
+                try {
+                    const writing = this.allWritings.find(w => w.id === id);
+                    if (!writing) return;
+
+                    document.getElementById('modalTitle').textContent = writing.title;
+                    document.getElementById('modalMeta').innerHTML = `
+                        <span class="content-type">${writing.content_type}</span>
+                        ${writing.explicit_content ? '<span class="explicit-badge">18+</span>' : ''}
+                        <span>${writing.word_count} words</span>
+                        <span>${this.formatDate(writing.file_timestamp)}</span>
+                    `;
+                    document.getElementById('modalContent').textContent = writing.content;
+                    document.getElementById('contentModal').style.display = 'flex';
+                } catch (error) {
+                    this.showError('Failed to load writing: ' + error.message);
+                }
+            }
+
+            showError(message) {
+                const errorDiv = document.getElementById('errorDisplay');
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('hidden');
+                setTimeout(() => {
+                    errorDiv.classList.add('hidden');
+                }, 5000);
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            formatNumber(num) {
+                if (num >= 1000000) {
+                    return (num / 1000000).toFixed(1) + 'M';
+                } else if (num >= 1000) {
+                    return (num / 1000).toFixed(1) + 'K';
+                }
+                return num.toString();
+            }
+
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString();
+            }
+        }
+
+        // Initialize the enhanced app
+        const app = new EnhancedMusingsApp();
+        window.app = app; // Make it globally accessible
+
+        // Initialize prompt type selector and suggestions
+        // Content loading functions for different media types
+        async function loadTextWritings() {
+            if (app) {
+                await app.loadWritings();
+            }
+        }
+
+        async function loadImagePrompts() {
+            try {
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('loading').textContent = 'Loading images...';
+
+                const response = await fetch('/api/prompts?prompt_type=image&status=completed');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const prompts = await response.json();
+                await displayMediaPrompts(prompts, 'image');
+            } catch (error) {
+                console.error('Failed to load image prompts:', error);
+                showError('Failed to load images: ' + error.message);
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
+        async function loadAudioPrompts() {
+            try {
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('loading').textContent = 'Loading audio...';
+
+                const response = await fetch('/api/prompts?prompt_type=music,audio,voice&status=completed');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const prompts = await response.json();
+                await displayMediaPrompts(prompts, 'audio');
+            } catch (error) {
+                console.error('Failed to load audio prompts:', error);
+                showError('Failed to load audio: ' + error.message);
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
+        async function loadAllContent() {
+            try {
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('loading').textContent = 'Loading all content...';
+
+                // Load writings and media prompts in parallel
+                const [writingsResponse, imageResponse, audioResponse] = await Promise.all([
+                    fetch('/api/writings?limit=1000&explicit=true'),
+                    fetch('/api/prompts?prompt_type=image&status=completed'),
+                    fetch('/api/prompts?prompt_type=music,audio,voice&status=completed')
+                ]);
+
+                const writings = writingsResponse.ok ? await writingsResponse.json() : { items: [] };
+                const images = imageResponse.ok ? await imageResponse.json() : [];
+                const audio = audioResponse.ok ? await audioResponse.json() : [];
+
+                await displayMixedContent(writings.items || [], images, audio);
+            } catch (error) {
+                console.error('Failed to load all content:', error);
+                showError('Failed to load content: ' + error.message);
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
+        async function displayMediaPrompts(prompts, mediaType) {
+            const contentGrid = document.getElementById('contentGrid');
+            contentGrid.innerHTML = '';
+
+            for (const prompt of prompts) {
+                // Get artifacts for this prompt
+                try {
+                    const artifactsResponse = await fetch(`/api/prompts/${prompt.id}/artifacts`);
+                    const artifacts = artifactsResponse.ok ? await artifactsResponse.json() : [];
+
+                    const card = createMediaCard(prompt, artifacts, mediaType);
+                    contentGrid.appendChild(card);
+                } catch (error) {
+                    console.error(`Failed to load artifacts for prompt ${prompt.id}:`, error);
+                }
+            }
+
+            updateStats({ media_count: prompts.length, media_type: mediaType });
+        }
+
+        async function displayMixedContent(writings, imagePrompts, audioPrompts) {
+            const contentGrid = document.getElementById('contentGrid');
+            contentGrid.innerHTML = '';
+
+            // Display writings first
+            if (app) {
+                app.allWritings = writings;
+                app.filteredWritings = writings;
+                app.displayWritings();
+            }
+
+            // Add media prompts
+            const allMediaPrompts = [...imagePrompts, ...audioPrompts];
+            for (const prompt of allMediaPrompts) {
+                try {
+                    const artifactsResponse = await fetch(`/api/prompts/${prompt.id}/artifacts`);
+                    const artifacts = artifactsResponse.ok ? await artifactsResponse.json() : [];
+
+                    const mediaType = ['music', 'audio', 'voice'].includes(prompt.prompt_type) ? 'audio' : 'image';
+                    const card = createMediaCard(prompt, artifacts, mediaType);
+                    contentGrid.appendChild(card);
+                } catch (error) {
+                    console.error(`Failed to load artifacts for prompt ${prompt.id}:`, error);
+                }
+            }
+
+            updateStats({
+                total_writings: writings.length,
+                media_count: allMediaPrompts.length
+            });
+        }
+
+        function createMediaCard(prompt, artifacts, mediaType) {
+            const card = document.createElement('div');
+            card.className = 'content-card media-card';
+            card.dataset.mediaType = mediaType;
+            card.dataset.promptId = prompt.id;
+
+            // Create thumbnail/preview section
+            let previewHtml = '';
+            if (mediaType === 'image' && artifacts.length > 0) {
+                const imageArtifact = artifacts.find(a => a.artifact_type === 'image' || a.file_path.match(/\.(png|jpg|jpeg|gif|webp)$/i));
+                if (imageArtifact) {
+                    previewHtml = `
+                        <div class="card-thumbnail">
+                            <img src="/api/media/${imageArtifact.file_path}"
+                                 alt="Generated image"
+                                 onload="this.classList.add('loaded')"
+                                 onerror="this.classList.add('error'); this.alt='Image not available';">
+                            <div class="thumbnail-overlay">
+                                <span class="view-full">🔍 View Full Size</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else if (mediaType === 'audio' && artifacts.length > 0) {
+                const audioArtifact = artifacts.find(a => a.artifact_type === 'audio' || a.file_path.match(/\.(mp3|wav|ogg|m4a)$/i));
+                if (audioArtifact) {
+                    previewHtml = `
+                        <div class="card-audio-preview">
+                            <div class="audio-visualization">
+                                <div class="audio-bars">
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                </div>
+                                <span class="play-button">▶️</span>
+                            </div>
+                            <audio preload="none" src="/api/media/${audioArtifact.file_path}"></audio>
+                        </div>
+                    `;
+                }
+            }
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="media-type-badge">${mediaType === 'image' ? '🎨' : '🎵'} ${mediaType.toUpperCase()}</span>
+                    <span class="card-date">${new Date(prompt.created_at).toLocaleDateString()}</span>
+                </div>
+                ${previewHtml}
+                <div class="card-title">${prompt.prompt_text.substring(0, 80)}${prompt.prompt_text.length > 80 ? '...' : ''}</div>
+                <div class="card-meta">
+                    <span class="artifact-count">${artifacts.length} artifact(s)</span>
+                    <span class="status-badge ${prompt.status}">${prompt.status}</span>
+                </div>
+            `;
+
+            // Add audio preview functionality
+            if (mediaType === 'audio') {
+                const audioElement = card.querySelector('audio');
+                const playButton = card.querySelector('.play-button');
+                const audioBars = card.querySelectorAll('.bar');
+
+                if (audioElement && playButton) {
+                    playButton.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent card click
+
+                        if (audioElement.paused) {
+                            audioElement.play();
+                            playButton.textContent = '⏸️';
+                            startAudioVisualization(audioBars);
+                        } else {
+                            audioElement.pause();
+                            playButton.textContent = '▶️';
+                            stopAudioVisualization(audioBars);
+                        }
+                    });
+
+                    audioElement.addEventListener('ended', () => {
+                        playButton.textContent = '▶️';
+                        stopAudioVisualization(audioBars);
+                    });
+                }
+            }
+
+            // Add click handler for opening media modal
+            card.addEventListener('click', () => openMediaModal(prompt, artifacts, mediaType));
+
+            return card;
+        }
+
+        function startAudioVisualization(bars) {
+            bars.forEach((bar, index) => {
+                const height = Math.random() * 40 + 10;
+                const delay = index * 0.1;
+                bar.style.animation = `audioBar 0.5s ease-in-out infinite alternate`;
+                bar.style.animationDelay = `${delay}s`;
+                bar.style.height = `${height}%`;
+            });
+        }
+
+        function stopAudioVisualization(bars) {
+            bars.forEach(bar => {
+                bar.style.animation = '';
+                bar.style.height = '20%';
+            });
+        }
+
+        function openMediaModal(prompt, artifacts, mediaType) {
+            // Placeholder for media modal - will be implemented in next todo
+            console.log('Opening media modal for:', prompt, artifacts, mediaType);
+        }
+
+        function showError(message) {
+            const errorDisplay = document.getElementById('errorDisplay');
+            errorDisplay.textContent = message;
+            errorDisplay.classList.remove('hidden');
+            setTimeout(() => errorDisplay.classList.add('hidden'), 5000);
+        }
+
+        function updateStats(stats) {
+            // Update statistics display
+            if (stats.total_writings !== undefined) {
+                document.getElementById('totalWritings').textContent = stats.total_writings;
+            }
+            if (stats.media_count !== undefined) {
+                // Add media count display if it doesn't exist
+                let mediaStatsEl = document.getElementById('mediaCount');
+                if (!mediaStatsEl) {
+                    const statsContainer = document.querySelector('.stats .stat-card');
+                    if (statsContainer) {
+                        mediaStatsEl = document.createElement('div');
+                        mediaStatsEl.id = 'mediaCount';
+                        mediaStatsEl.className = 'stat-item';
+                        statsContainer.appendChild(mediaStatsEl);
+                    }
+                }
+                if (mediaStatsEl) {
+                    mediaStatsEl.textContent = `${stats.media_count} ${stats.media_type || 'media'} items`;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Restore the saved tab
+            restoreActiveTab();
+            
+            // Set initial prompt type
+            selectPromptType('text');
+            
+            // Load queue stats initially
+            loadQueueStats();
+            
+            // Set up periodic queue stats refresh (every 30 seconds)
+            setInterval(loadQueueStats, 30000);
+            
+            // Setup queue modal close handlers
+            document.getElementById('closeQueueModal').addEventListener('click', () => {
+                document.getElementById('queueModal').style.display = 'none';
+            });
+            
+            document.getElementById('queueModal').addEventListener('click', (e) => {
+                if (e.target.id === 'queueModal') {
+                    document.getElementById('queueModal').style.display = 'none';
+                }
+            });
+            
+            // Content source filter setup
+            const contentSourceFilter = document.getElementById('contentSourceFilter');
+            const textFilters = document.getElementById('textFilters');
+
+            contentSourceFilter.addEventListener('change', async function() {
+                const selectedType = this.value;
+
+                // Show/hide text content type filters
+                if (selectedType === 'writings' || selectedType === 'all') {
+                    textFilters.style.display = 'block';
+                } else {
+                    textFilters.style.display = 'none';
+                }
+
+                // Load appropriate content based on selection
+                switch (selectedType) {
+                    case 'all':
+                        await loadAllContent();
+                        break;
+                    case 'writings':
+                        await loadTextWritings();
+                        break;
+                    case 'images':
+                        await loadImagePrompts();
+                        break;
+                    case 'audio':
+                        await loadAudioPrompts();
+                        break;
+                }
+            });
+
+            // Auto-switch to browse tab if there are writings to show
+            setTimeout(() => {
+                if (app && app.allWritings && app.allWritings.length > 0) {
+                    console.log('App initialized with', app.allWritings.length, 'writings');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

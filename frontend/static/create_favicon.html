@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favicon Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        .preview { font-size: 64px; margin: 20px; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        button { padding: 10px 20px; font-size: 16px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Anthony's Musings Favicon Generator</h1>
+    
+    <div class="preview">
+        <div>🎭 📝 ✍️ 🖋️</div>
+        <p>Choose your favorite emoji above</p>
+    </div>
+    
+    <canvas id="favicon" width="32" height="32"></canvas>
+    <canvas id="favicon16" width="16" height="16"></canvas>
+    
+    <div>
+        <button onclick="generateFavicon('🎭')">🎭 Theater Mask</button>
+        <button onclick="generateFavicon('📝')">📝 Memo</button>
+        <button onclick="generateFavicon('✍️')">✍️ Writing Hand</button>
+        <button onclick="generateFavicon('🖋️')">🖋️ Fountain Pen</button>
+    </div>
+    
+    <div id="downloads" style="margin-top: 20px;"></div>
+    
+    <script>
+        function generateFavicon(emoji) {
+            // 32x32 favicon
+            const canvas32 = document.getElementById('favicon');
+            const ctx32 = canvas32.getContext('2d');
+            ctx32.clearRect(0, 0, 32, 32);
+            ctx32.font = '24px Arial';
+            ctx32.textAlign = 'center';
+            ctx32.textBaseline = 'middle';
+            ctx32.fillText(emoji, 16, 16);
+            
+            // 16x16 favicon
+            const canvas16 = document.getElementById('favicon16');
+            const ctx16 = canvas16.getContext('2d');
+            ctx16.clearRect(0, 0, 16, 16);
+            ctx16.font = '12px Arial';
+            ctx16.textAlign = 'center';
+            ctx16.textBaseline = 'middle';
+            ctx16.fillText(emoji, 8, 8);
+            
+            // Generate download links
+            const downloads = document.getElementById('downloads');
+            downloads.innerHTML = `
+                <h3>Right-click and "Save As":</h3>
+                <div style="margin: 10px;">
+                    <canvas id="ico32" width="32" height="32" style="border: 1px solid #ccc;"></canvas>
+                    <br><small>32x32 - Save as "favicon.ico"</small>
+                </div>
+                <div style="margin: 10px;">
+                    <canvas id="ico16" width="16" height="16" style="border: 1px solid #ccc;"></canvas>
+                    <br><small>16x16 - Save as "favicon-16x16.png"</small>
+                </div>
+            `;
+            
+            // Copy to download canvases
+            const ico32 = document.getElementById('ico32');
+            const ico16 = document.getElementById('ico16');
+            ico32.getContext('2d').drawImage(canvas32, 0, 0);
+            ico16.getContext('2d').drawImage(canvas16, 0, 0);
+        }
+        
+        // Generate default favicon on load
+        generateFavicon('🎭');
+    </script>
+</body>
+</html>
