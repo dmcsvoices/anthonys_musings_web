@@ -2036,6 +2036,9 @@
                         <option value="images">Images</option>
                         <option value="audio">Audio</option>
                     </select>
+                    <button id="discoverArtifactsBtn" class="filter-btn" style="margin-left: 10px; background: linear-gradient(135deg, #28a745, #20c997); color: white;" onclick="discoverAllArtifacts()">
+                        🔍 Discover Images
+                    </button>
                 </div>
 
                 <!-- Text Content Type Filters (shown only for writings) -->
@@ -3344,6 +3347,52 @@
                 showError('Failed to load audio: ' + error.message);
             } finally {
                 document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
+        async function discoverAllArtifacts() {
+            try {
+                const discoverBtn = document.getElementById('discoverArtifactsBtn');
+                const originalText = discoverBtn.innerHTML;
+
+                // Update button to show loading state
+                discoverBtn.innerHTML = '⏳ Discovering...';
+                discoverBtn.disabled = true;
+
+                console.log('Starting artifact discovery...');
+
+                const response = await fetch('/api/discover-all-artifacts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Discovery result:', result);
+
+                // Show success message
+                const message = `🎉 Discovery complete! Found ${result.total_artifacts_discovered} images for ${result.results.length} prompts.`;
+                showQueueNotification(message, 'success');
+
+                // If currently viewing images, refresh the display
+                const currentFilter = document.getElementById('contentSourceFilter').value;
+                if (currentFilter === 'images') {
+                    await loadImagePrompts();
+                }
+
+            } catch (error) {
+                console.error('Failed to discover artifacts:', error);
+                showError('Failed to discover images: ' + error.message);
+            } finally {
+                // Restore button
+                const discoverBtn = document.getElementById('discoverArtifactsBtn');
+                discoverBtn.innerHTML = '🔍 Discover Images';
+                discoverBtn.disabled = false;
             }
         }
 
