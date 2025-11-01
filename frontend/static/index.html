@@ -458,6 +458,50 @@
         .prompt-input.image-mode {
             background: linear-gradient(135deg, rgba(34, 139, 34, 0.05), rgba(0, 100, 0, 0.05));
         }
+
+        /* Meta-prompt mode styling */
+        .prompt-input.meta-prompt-mode {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+            border-left: 4px solid #FFD700;
+        }
+
+        /* Meta-prompt type buttons styling */
+        .type-btn.meta-prompt {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            position: relative;
+        }
+
+        .type-btn.meta-prompt:hover {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .type-btn.meta-prompt.active {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-color: transparent;
+            color: #333;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .type-btn.meta-prompt.active .type-desc {
+            color: rgba(51, 51, 51, 0.8);
+        }
+
+        .type-btn.meta-prompt.active .type-icon {
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+        }
+
+        /* Optional: Add a subtle indicator for meta-prompt buttons */
+        .type-btn.meta-prompt::after {
+            content: "✍️";
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
         .search-section {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -747,6 +791,383 @@
 
         .card-thumbnail img.loaded + .thumbnail-overlay::before {
             display: none;
+        }
+
+        /* Image Modal Styles */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .image-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal-content {
+            position: relative;
+            width: 95%;
+            height: 95%;
+            max-width: 1400px;
+            max-height: 900px;
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .image-modal-info h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .image-counter {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .image-modal-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .modal-action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .image-modal-body {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+
+        #modalImage {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            cursor: grab;
+            user-select: none;
+        }
+
+        #modalImage:active {
+            cursor: grabbing;
+        }
+
+        #modalImage.zoomed {
+            cursor: grab;
+        }
+
+        .image-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            color: #666;
+            z-index: 1;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .image-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .image-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev-btn {
+            left: 20px;
+        }
+
+        .next-btn {
+            right: 20px;
+        }
+
+        .image-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: translateY(-50%);
+        }
+
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 25px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .zoom-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .zoom-level {
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .metadata-panel {
+            width: 350px;
+            background: #f8f9fa;
+            border-left: 1px solid #e0e0e0;
+            padding: 24px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .metadata-panel.hidden {
+            width: 0;
+            padding: 0;
+            opacity: 0;
+        }
+
+        .metadata-panel h4 {
+            margin: 0 0 20px 0;
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .metadata-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .metadata-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .metadata-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metadata-value {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .settings-list {
+            background: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .thumbnail-strip {
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            padding: 12px;
+            flex-shrink: 0;
+        }
+
+        .thumbnail-strip.hidden {
+            display: none;
+        }
+
+        .thumbnail-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .thumbnail-item {
+            flex-shrink: 0;
+            width: 80px;
+            height: 60px;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail-item:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .thumbnail-item.active {
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+        }
+
+        .thumbnail-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .image-modal-content {
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+            }
+
+            .metadata-panel {
+                width: 100%;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 50%;
+                border-left: none;
+                border-top: 1px solid #e0e0e0;
+                transform: translateY(100%);
+            }
+
+            .metadata-panel:not(.hidden) {
+                transform: translateY(0);
+            }
+
+            .image-nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .prev-btn {
+                left: 10px;
+            }
+
+            .next-btn {
+                right: 10px;
+            }
+
+            .zoom-controls {
+                bottom: 10px;
+                right: 10px;
+                padding: 6px;
+            }
+
+            .zoom-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
         }
 
         .explicit-toggle {
@@ -1230,6 +1651,137 @@
             color: white;
         }
 
+        /* Artifact Display Styles */
+        .prompt-artifacts {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(248, 249, 250, 0.6);
+            border-radius: 8px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .artifacts-header {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .artifact-count {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 600;
+        }
+
+        .artifact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .artifact-item {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .artifact-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .artifact-thumbnail {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        .artifact-audio-preview {
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+            margin-bottom: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+        }
+
+        .audio-play-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: white;
+        }
+
+        .audio-play-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
+            transform: scale(1.1);
+        }
+
+        .artifact-type {
+            font-size: 0.7em;
+            color: #666;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .artifact-filename {
+            font-size: 0.65em;
+            color: #999;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .artifact-status-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            padding: 1px 4px;
+            border-radius: 8px;
+            font-size: 0.6em;
+            font-weight: 600;
+        }
+
+        .no-artifacts {
+            color: #999;
+            font-style: italic;
+            font-size: 0.8em;
+            text-align: center;
+            padding: 15px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -1278,6 +1830,29 @@
             .prompt-meta {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+
+            .artifact-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 8px;
+            }
+
+            .artifact-item {
+                padding: 6px;
+            }
+
+            .artifact-thumbnail {
+                height: 60px;
+            }
+
+            .artifact-audio-preview {
+                height: 60px;
+            }
+
+            .audio-play-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
             }
         }
     </style>
@@ -1350,6 +1925,27 @@
                                 <div class="type-icon">🎨</div>
                                 <div class="type-label">Image</div>
                                 <div class="type-desc">Visual concepts, scenes</div>
+                            </button>
+                            <!-- Meta-prompt types: Request agents to CREATE prompts -->
+                            <button type="button" class="type-btn meta-prompt" data-type="image_prompt" onclick="selectPromptType('image_prompt')">
+                                <div class="type-icon">🖼️✍️</div>
+                                <div class="type-label">Image Prompt</div>
+                                <div class="type-desc">Request for image description</div>
+                            </button>
+                            <button type="button" class="type-btn meta-prompt" data-type="music_prompt" onclick="selectPromptType('music_prompt')">
+                                <div class="type-icon">🎼✍️</div>
+                                <div class="type-label">Music Prompt</div>
+                                <div class="type-desc">Request for music description</div>
+                            </button>
+                            <button type="button" class="type-btn meta-prompt" data-type="lyrics_prompt" onclick="selectPromptType('lyrics_prompt')">
+                                <div class="type-icon">🎤✍️</div>
+                                <div class="type-label">Lyrics Prompt</div>
+                                <div class="type-desc">Request for lyrics description</div>
+                            </button>
+                            <button type="button" class="type-btn meta-prompt" data-type="song_prompt" onclick="selectPromptType('song_prompt')">
+                                <div class="type-icon">🎵✍️</div>
+                                <div class="type-label">Song Prompt</div>
+                                <div class="type-desc">Request for song concept</div>
                             </button>
                         </div>
                     </div>
@@ -1512,6 +2108,92 @@
         </div>
     </div>
 
+        <!-- Image Modal -->
+        <div id="imageModal" class="image-modal">
+            <div class="image-modal-content">
+                <div class="image-modal-header">
+                    <div class="image-modal-info">
+                        <h3 id="imageModalTitle">Image Title</h3>
+                        <span id="imageModalCounter" class="image-counter">1 / 1</span>
+                    </div>
+                    <div class="image-modal-controls">
+                        <button id="imageModalDownload" class="modal-action-btn download-btn" title="Download Image">
+                            💾 Download
+                        </button>
+                        <button id="imageModalMetadata" class="modal-action-btn metadata-btn" title="Toggle Metadata">
+                            📋 Info
+                        </button>
+                        <button class="modal-action-btn close-btn" id="closeImageModal" title="Close (Esc)">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-modal-body">
+                    <div class="image-container">
+                        <img id="modalImage" src="" alt="Full size image" />
+                        <div class="image-loading">
+                            <div class="loading-spinner"></div>
+                            <span>Loading image...</span>
+                        </div>
+
+                        <!-- Navigation arrows -->
+                        <button id="prevImageBtn" class="image-nav-btn prev-btn" title="Previous Image (←)">&larr;</button>
+                        <button id="nextImageBtn" class="image-nav-btn next-btn" title="Next Image (→)">&rarr;</button>
+
+                        <!-- Zoom controls -->
+                        <div class="zoom-controls">
+                            <button id="zoomOutBtn" class="zoom-btn" title="Zoom Out (-)">−</button>
+                            <span id="zoomLevel" class="zoom-level">100%</span>
+                            <button id="zoomInBtn" class="zoom-btn" title="Zoom In (+)">+</button>
+                            <button id="zoomResetBtn" class="zoom-btn" title="Reset Zoom (0)">⌂</button>
+                        </div>
+                    </div>
+
+                    <!-- Metadata panel -->
+                    <div id="imageMetadataPanel" class="metadata-panel hidden">
+                        <h4>Image Details</h4>
+                        <div class="metadata-grid">
+                            <div class="metadata-item">
+                                <span class="metadata-label">Prompt:</span>
+                                <span id="metadataPrompt" class="metadata-value">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Created:</span>
+                                <span id="metadataCreated" class="metadata-value">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Status:</span>
+                                <span id="metadataStatus" class="metadata-value">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">File Type:</span>
+                                <span id="metadataFileType" class="metadata-value">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">File Size:</span>
+                                <span id="metadataFileSize" class="metadata-value">-</span>
+                            </div>
+                            <div class="metadata-item">
+                                <span class="metadata-label">Generation Settings:</span>
+                                <div id="metadataSettings" class="metadata-value settings-list">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thumbnail strip for gallery navigation -->
+                <div id="imageThumbnailStrip" class="thumbnail-strip hidden">
+                    <div class="thumbnail-container">
+                        <!-- Thumbnails will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Click outside to close overlay -->
+            <div class="modal-backdrop"></div>
+        </div>
+
     <script>
         // Tab switching with persistence
         function switchTab(tabName) {
@@ -1551,7 +2233,7 @@
             
             // Update prompt input styling and placeholder
             const promptInput = document.getElementById('promptInput');
-            const promptInputClasses = ['music-mode', 'voice-mode', 'image-mode'];
+            const promptInputClasses = ['music-mode', 'voice-mode', 'image-mode', 'meta-prompt-mode'];
             promptInputClasses.forEach(cls => promptInput.classList.remove(cls));
             
             // Update placeholder and styling based on type
@@ -1590,6 +2272,43 @@
 • Design the visual concept for a book cover about time travel
 • Describe an abstract representation of human consciousness`;
                     break;
+
+                // Meta-prompt types: Request agents to CREATE prompts
+                case 'image_prompt':
+                    promptInput.classList.add('meta-prompt-mode');
+                    promptInput.placeholder = `Request agents to create an image prompt... For example:
+• "Create a detailed prompt for a cyberpunk cityscape"
+• "Generate an image description for a fantasy forest scene"
+• "Write a prompt for an abstract art piece about emotions"
+• "Describe a futuristic vehicle design for image generation"`;
+                    break;
+
+                case 'music_prompt':
+                    promptInput.classList.add('meta-prompt-mode');
+                    promptInput.placeholder = `Request agents to create a music prompt... For example:
+• "Generate lyrics for a song about overcoming challenges"
+• "Create a description for an epic orchestral piece"
+• "Write music prompts for a relaxing ambient track"
+• "Describe the concept for a high-energy electronic song"`;
+                    break;
+
+                case 'lyrics_prompt':
+                    promptInput.classList.add('meta-prompt-mode');
+                    promptInput.placeholder = `Request agents to create lyrics prompts... For example:
+• "Write lyrics about social justice and equality"
+• "Create a love song with metaphors about space exploration"
+• "Generate rap lyrics about personal growth and reflection"
+• "Write song lyrics that tell a story about time travel"`;
+                    break;
+
+                case 'song_prompt':
+                    promptInput.classList.add('meta-prompt-mode');
+                    promptInput.placeholder = `Request agents to create a song concept... For example:
+• "Develop a complete song concept about digital consciousness"
+• "Create a song structure and theme about environmental change"
+• "Generate a concept for a duet about parallel universes"
+• "Design a song idea that blends classical and electronic elements"`;
+                    break;
             }
             
             // Update suggestions based on type
@@ -1599,9 +2318,13 @@
             const generateBtn = document.getElementById('generateBtn');
             const typeLabels = {
                 'text': 'Text Content',
-                'music': 'Musical Content', 
+                'music': 'Musical Content',
                 'voice': 'Voice Content',
-                'image': 'Visual Concept'
+                'image': 'Visual Concept',
+                'image_prompt': 'Image Prompt Request',
+                'music_prompt': 'Music Prompt Request',
+                'lyrics_prompt': 'Lyrics Prompt Request',
+                'song_prompt': 'Song Prompt Request'
             };
             generateBtn.textContent = `✨ Generate ${typeLabels[type]}`;
         }
@@ -1942,18 +2665,20 @@
                 // Build modal content
                 const modalContent = document.getElementById('queueModalContent');
                 modalContent.innerHTML = '';
-                
+
                 if (filterStatus) {
                     // Show only the selected status
-                    const section = createQueueSection(filterStatus, groupedPrompts[filterStatus]);
+                    const section = await createQueueSection(filterStatus, groupedPrompts[filterStatus]);
                     modalContent.appendChild(section);
                 } else {
                     // Show all sections
-                    ['unprocessed', 'processing', 'completed', 'failed'].forEach(status => {
-                        if (groupedPrompts[status].length > 0) {
-                            const section = createQueueSection(status, groupedPrompts[status]);
-                            modalContent.appendChild(section);
-                        }
+                    const sectionPromises = ['unprocessed', 'processing', 'completed', 'failed']
+                        .filter(status => groupedPrompts[status].length > 0)
+                        .map(status => createQueueSection(status, groupedPrompts[status]));
+
+                    const sections = await Promise.all(sectionPromises);
+                    sections.forEach(section => {
+                        modalContent.appendChild(section);
                     });
                 }
                 
@@ -1966,75 +2691,78 @@
             }
         }
 
-        // Create a queue section for the modal
-        function createQueueSection(status, prompts) {
+        // Create a queue section for the modal (now async to handle artifact loading)
+        async function createQueueSection(status, prompts) {
             const section = document.createElement('div');
             section.className = 'queue-section';
-            
+
             const statusLabels = {
                 unprocessed: '⏳ Queued',
                 processing: '🔄 Processing',
                 completed: '✅ Completed',
                 failed: '❌ Failed'
             };
-            
+
             const sectionTitle = document.createElement('div');
             sectionTitle.className = 'queue-section-title';
             sectionTitle.textContent = `${statusLabels[status]} (${prompts.length})`;
             section.appendChild(sectionTitle);
-            
+
             if (prompts.length === 0) {
                 const emptyDiv = document.createElement('div');
                 emptyDiv.className = 'empty-queue';
                 emptyDiv.textContent = 'No prompts in this category';
                 section.appendChild(emptyDiv);
             } else {
-                prompts.forEach(prompt => {
-                    const promptDiv = createPromptItem(prompt);
+                // Create all prompt items concurrently
+                const promptPromises = prompts.map(prompt => createPromptItem(prompt));
+                const promptElements = await Promise.all(promptPromises);
+
+                promptElements.forEach(promptDiv => {
                     section.appendChild(promptDiv);
                 });
             }
-            
+
             return section;
         }
 
-        // Create a prompt item element
-        function createPromptItem(prompt) {
+        // Create a prompt item element (now async to fetch artifacts)
+        async function createPromptItem(prompt) {
             const item = document.createElement('div');
             item.className = 'prompt-item';
-            
+
             const header = document.createElement('div');
             header.className = 'prompt-header';
-            
+
             const promptId = document.createElement('div');
             promptId.className = 'prompt-id';
             promptId.textContent = `#${prompt.id}`;
-            
+
             const promptDate = document.createElement('div');
             promptDate.className = 'prompt-date';
             promptDate.textContent = new Date(prompt.created_at).toLocaleString();
-            
+
             header.appendChild(promptId);
             header.appendChild(promptDate);
-            
+
             const promptText = document.createElement('div');
             promptText.className = 'prompt-text';
             promptText.textContent = prompt.prompt_text;
-            
+
             const meta = document.createElement('div');
             meta.className = 'prompt-meta';
-            
+
             const typeBadge = document.createElement('span');
             typeBadge.className = 'prompt-type-badge';
             typeBadge.textContent = prompt.prompt_type || 'text';
-            
+
             const statusBadge = document.createElement('span');
             statusBadge.className = `prompt-status-badge status-${prompt.status}`;
             statusBadge.textContent = prompt.status;
-            
+
             meta.appendChild(typeBadge);
             meta.appendChild(statusBadge);
-            
+
             // Add error message if failed
             if (prompt.status === 'failed' && prompt.error_message) {
                 const errorDiv = document.createElement('div');
@@ -2044,13 +2772,13 @@
                 errorDiv.textContent = `Error: ${prompt.error_message}`;
                 meta.appendChild(errorDiv);
             }
-            
+
             // Add processing time if completed
             if (prompt.status === 'completed' && prompt.completed_at && prompt.processed_at) {
                 const duration = new Date(prompt.completed_at) - new Date(prompt.processed_at);
                 const minutes = Math.floor(duration / 60000);
                 const seconds = Math.floor((duration % 60000) / 1000);
-                
+
                 const durationDiv = document.createElement('div');
                 durationDiv.style.color = '#27ae60';
                 durationDiv.style.fontSize = '0.8em';
@@ -2058,12 +2786,155 @@
                 durationDiv.textContent = `Duration: ${minutes}m ${seconds}s`;
                 meta.appendChild(durationDiv);
             }
-            
+
             item.appendChild(header);
             item.appendChild(promptText);
             item.appendChild(meta);
-            
+
+            // Fetch and display artifacts for completed prompts with media types
+            if (prompt.status === 'completed' && (prompt.prompt_type === 'image' || prompt.prompt_type === 'audio')) {
+                try {
+                    const artifactsResponse = await fetch(`/api/prompts/${prompt.id}/artifacts`);
+                    if (artifactsResponse.ok) {
+                        const artifacts = await artifactsResponse.json();
+                        if (artifacts && artifacts.length > 0) {
+                            const artifactsSection = await createArtifactsSection(prompt, artifacts);
+                            item.appendChild(artifactsSection);
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Error fetching artifacts for prompt ${prompt.id}:`, error);
+                }
+            }
+
             return item;
+        }
+
+        // Create artifacts section for a prompt
+        async function createArtifactsSection(prompt, artifacts) {
+            const section = document.createElement('div');
+            section.className = 'prompt-artifacts';
+
+            const header = document.createElement('div');
+            header.className = 'artifacts-header';
+            header.innerHTML = `
+                <span>📎 Generated Media</span>
+                <span class="artifact-count">${artifacts.length}</span>
+            `;
+            section.appendChild(header);
+
+            const grid = document.createElement('div');
+            grid.className = 'artifact-grid';
+
+            for (const artifact of artifacts) {
+                const artifactItem = await createArtifactItem(prompt, artifact);
+                grid.appendChild(artifactItem);
+            }
+
+            section.appendChild(grid);
+            return section;
+        }
+
+        // Create individual artifact item
+        async function createArtifactItem(prompt, artifact) {
+            const item = document.createElement('div');
+            item.className = 'artifact-item';
+
+            const isImage = artifact.file_type && artifact.file_type.startsWith('image/');
+            const isAudio = artifact.file_type && artifact.file_type.startsWith('audio/');
+
+            if (isImage) {
+                // Create image thumbnail
+                const img = document.createElement('img');
+                img.className = 'artifact-thumbnail';
+                img.src = `/api/media/${artifact.file_path}`;
+                img.alt = artifact.filename || 'Generated image';
+                img.loading = 'lazy';
+
+                // Add error handling for failed image loads
+                img.onerror = function() {
+                    this.style.background = 'linear-gradient(135deg, #f8d7da, #f5c6cb)';
+                    this.style.display = 'flex';
+                    this.style.alignItems = 'center';
+                    this.style.justifyContent = 'center';
+                    this.innerHTML = '<span style="color: #721c24; font-size: 0.7em;">Image unavailable</span>';
+                };
+
+                // Click handler to open in image modal
+                item.addEventListener('click', () => {
+                    openImageModal(prompt, [artifact]);
+                });
+
+                item.appendChild(img);
+
+            } else if (isAudio) {
+                // Create audio preview
+                const audioPreview = document.createElement('div');
+                audioPreview.className = 'artifact-audio-preview';
+
+                const playBtn = document.createElement('button');
+                playBtn.className = 'audio-play-btn';
+                playBtn.innerHTML = '▶';
+                playBtn.title = 'Preview audio';
+
+                const waveIcon = document.createElement('div');
+                waveIcon.style.fontSize = '0.6em';
+                waveIcon.style.marginTop = '4px';
+                waveIcon.innerHTML = '♪ ♫ ♪';
+
+                audioPreview.appendChild(playBtn);
+                audioPreview.appendChild(waveIcon);
+
+                // Click handler for audio preview
+                playBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    playAudioPreview(artifact);
+                });
+
+                item.appendChild(audioPreview);
+            }
+
+            // Add artifact type label
+            const typeLabel = document.createElement('div');
+            typeLabel.className = 'artifact-type';
+            typeLabel.textContent = isImage ? 'IMAGE' : isAudio ? 'AUDIO' : 'FILE';
+            item.appendChild(typeLabel);
+
+            // Add filename
+            if (artifact.filename) {
+                const filename = document.createElement('div');
+                filename.className = 'artifact-filename';
+                filename.textContent = artifact.filename;
+                filename.title = artifact.filename;
+                item.appendChild(filename);
+            }
+
+            return item;
+        }
+
+        // Play audio preview
+        function playAudioPreview(artifact) {
+            // Stop any currently playing audio
+            if (window.currentAudioPreview) {
+                window.currentAudioPreview.pause();
+                window.currentAudioPreview = null;
+            }
+
+            const audio = new Audio(`/api/media/${artifact.file_path}`);
+            window.currentAudioPreview = audio;
+
+            audio.play().catch(error => {
+                console.error('Error playing audio preview:', error);
+                alert('Error playing audio preview');
+            });
+
+            // Auto-stop after 30 seconds for preview
+            setTimeout(() => {
+                if (window.currentAudioPreview === audio) {
+                    audio.pause();
+                    window.currentAudioPreview = null;
+                }
+            }, 30000);
         }
         async function simulateGeneration(prompt, statusText, promptType) {
             const steps = {
@@ -2661,9 +3532,246 @@
             });
         }
 
+        // Image Modal Implementation
+        let currentImageIndex = 0;
+        let currentImages = [];
+        let currentPrompt = null;
+        let zoomLevel = 1;
+        let isZoomed = false;
+        let imagePosition = { x: 0, y: 0 };
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+
         function openMediaModal(prompt, artifacts, mediaType) {
-            // Placeholder for media modal - will be implemented in next todo
-            console.log('Opening media modal for:', prompt, artifacts, mediaType);
+            if (mediaType === 'image') {
+                openImageModal(prompt, artifacts);
+            } else if (mediaType === 'audio') {
+                // For audio, we could implement an audio modal or just play inline
+                console.log('Audio modal not implemented yet - using inline player');
+            }
+        }
+
+        function openImageModal(prompt, artifacts) {
+            const imageArtifacts = artifacts.filter(a =>
+                a.artifact_type === 'image' ||
+                a.file_path.match(/\.(png|jpg|jpeg|gif|webp)$/i)
+            );
+
+            if (imageArtifacts.length === 0) {
+                showError('No images found for this prompt');
+                return;
+            }
+
+            currentImages = imageArtifacts;
+            currentPrompt = prompt;
+            currentImageIndex = 0;
+            zoomLevel = 1;
+            isZoomed = false;
+            imagePosition = { x: 0, y: 0 };
+
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            loadImageInModal(0);
+            updateImageCounter();
+            updateNavigationButtons();
+            populateMetadata();
+            createThumbnailStrip();
+
+            // Hide metadata panel initially
+            document.getElementById('imageMetadataPanel').classList.add('hidden');
+        }
+
+        function loadImageInModal(index) {
+            if (index < 0 || index >= currentImages.length) return;
+
+            currentImageIndex = index;
+            const artifact = currentImages[index];
+            const modalImage = document.getElementById('modalImage');
+            const loadingDiv = document.querySelector('.image-loading');
+
+            // Show loading
+            loadingDiv.style.display = 'flex';
+            modalImage.style.opacity = '0';
+
+            // Reset zoom and position
+            resetZoom();
+
+            // Load image
+            modalImage.onload = function() {
+                loadingDiv.style.display = 'none';
+                modalImage.style.opacity = '1';
+                updateImageCounter();
+                updateNavigationButtons();
+                updateActiveThumbnail();
+            };
+
+            modalImage.onerror = function() {
+                loadingDiv.style.display = 'none';
+                modalImage.style.opacity = '0.5';
+                modalImage.alt = 'Failed to load image';
+            };
+
+            modalImage.src = `/api/media/${artifact.file_path}`;
+            document.getElementById('imageModalTitle').textContent =
+                currentPrompt.prompt_text.substring(0, 60) + (currentPrompt.prompt_text.length > 60 ? '...' : '');
+        }
+
+        function updateImageCounter() {
+            const counter = document.getElementById('imageModalCounter');
+            counter.textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevImageBtn');
+            const nextBtn = document.getElementById('nextImageBtn');
+
+            prevBtn.disabled = currentImageIndex === 0;
+            nextBtn.disabled = currentImageIndex === currentImages.length - 1;
+
+            // Hide buttons if only one image
+            if (currentImages.length <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+            }
+        }
+
+        function navigateImage(direction) {
+            const newIndex = currentImageIndex + direction;
+            if (newIndex >= 0 && newIndex < currentImages.length) {
+                loadImageInModal(newIndex);
+            }
+        }
+
+        function createThumbnailStrip() {
+            const thumbnailStrip = document.getElementById('imageThumbnailStrip');
+            const container = thumbnailStrip.querySelector('.thumbnail-container');
+
+            // Clear existing thumbnails
+            container.innerHTML = '';
+
+            if (currentImages.length <= 1) {
+                thumbnailStrip.classList.add('hidden');
+                return;
+            }
+
+            thumbnailStrip.classList.remove('hidden');
+
+            currentImages.forEach((artifact, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'thumbnail-item';
+                if (index === currentImageIndex) {
+                    thumb.classList.add('active');
+                }
+
+                const img = document.createElement('img');
+                img.src = `/api/media/${artifact.file_path}`;
+                img.alt = `Thumbnail ${index + 1}`;
+                img.onerror = function() {
+                    this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA4MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iNjAiIGZpbGw9IiNmNWY1ZjUiLz48dGV4dCB4PSI0MCIgeT0iMzAiIGZpbGw9IiM5OTkiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+Tm8gSW1hZ2U8L3RleHQ+PC9zdmc+';
+                };
+
+                thumb.appendChild(img);
+                thumb.addEventListener('click', () => loadImageInModal(index));
+                container.appendChild(thumb);
+            });
+        }
+
+        function updateActiveThumbnail() {
+            const thumbnails = document.querySelectorAll('.thumbnail-item');
+            thumbnails.forEach((thumb, index) => {
+                thumb.classList.toggle('active', index === currentImageIndex);
+            });
+        }
+
+        function populateMetadata() {
+            const artifact = currentImages[currentImageIndex];
+
+            document.getElementById('metadataPrompt').textContent = currentPrompt.prompt_text;
+            document.getElementById('metadataCreated').textContent = new Date(currentPrompt.created_at).toLocaleString();
+            document.getElementById('metadataStatus').textContent = currentPrompt.status;
+
+            // File type from extension
+            const fileExtension = artifact.file_path.split('.').pop().toUpperCase();
+            document.getElementById('metadataFileType').textContent = fileExtension;
+
+            // File size (we'll estimate from the API or show as unknown)
+            document.getElementById('metadataFileSize').textContent = 'Unknown';
+
+            // Generation settings
+            const settingsDiv = document.getElementById('metadataSettings');
+            if (currentPrompt.metadata) {
+                try {
+                    const metadata = typeof currentPrompt.metadata === 'string' ?
+                        JSON.parse(currentPrompt.metadata) : currentPrompt.metadata;
+                    settingsDiv.textContent = JSON.stringify(metadata, null, 2);
+                } catch (e) {
+                    settingsDiv.textContent = 'No settings available';
+                }
+            } else {
+                settingsDiv.textContent = 'No settings available';
+            }
+        }
+
+        // Zoom functionality
+        function zoomIn() {
+            zoomLevel = Math.min(zoomLevel * 1.5, 5);
+            applyZoom();
+        }
+
+        function zoomOut() {
+            zoomLevel = Math.max(zoomLevel / 1.5, 0.5);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            zoomLevel = 1;
+            imagePosition = { x: 0, y: 0 };
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const modalImage = document.getElementById('modalImage');
+            const zoomLevelDisplay = document.getElementById('zoomLevel');
+
+            modalImage.style.transform = `scale(${zoomLevel}) translate(${imagePosition.x}px, ${imagePosition.y}px)`;
+            zoomLevelDisplay.textContent = Math.round(zoomLevel * 100) + '%';
+
+            isZoomed = zoomLevel > 1;
+            modalImage.classList.toggle('zoomed', isZoomed);
+        }
+
+        // Download functionality
+        function downloadCurrentImage() {
+            const artifact = currentImages[currentImageIndex];
+            const link = document.createElement('a');
+            link.href = `/api/media/${artifact.file_path}`;
+            link.download = artifact.file_path.split('/').pop();
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Toggle metadata panel
+        function toggleMetadata() {
+            const panel = document.getElementById('imageMetadataPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+
+            // Clean up
+            currentImages = [];
+            currentPrompt = null;
+            currentImageIndex = 0;
+            resetZoom();
         }
 
         function showError(message) {
@@ -2696,6 +3804,183 @@
             }
         }
 
+        function setupImageModalEvents() {
+            // Close modal events
+            document.getElementById('closeImageModal').addEventListener('click', closeImageModal);
+            document.querySelector('.modal-backdrop').addEventListener('click', closeImageModal);
+
+            // Navigation events
+            document.getElementById('prevImageBtn').addEventListener('click', () => navigateImage(-1));
+            document.getElementById('nextImageBtn').addEventListener('click', () => navigateImage(1));
+
+            // Zoom control events
+            document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
+            document.getElementById('zoomOutBtn').addEventListener('click', zoomOut);
+            document.getElementById('zoomResetBtn').addEventListener('click', resetZoom);
+
+            // Action button events
+            document.getElementById('imageModalDownload').addEventListener('click', downloadCurrentImage);
+            document.getElementById('imageModalMetadata').addEventListener('click', toggleMetadata);
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                const modal = document.getElementById('imageModal');
+                if (!modal.classList.contains('active')) return;
+
+                switch(e.key) {
+                    case 'Escape':
+                        e.preventDefault();
+                        closeImageModal();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        navigateImage(-1);
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        navigateImage(1);
+                        break;
+                    case '+':
+                    case '=':
+                        e.preventDefault();
+                        zoomIn();
+                        break;
+                    case '-':
+                        e.preventDefault();
+                        zoomOut();
+                        break;
+                    case '0':
+                        e.preventDefault();
+                        resetZoom();
+                        break;
+                    case 'd':
+                    case 'D':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            downloadCurrentImage();
+                        }
+                        break;
+                    case 'i':
+                    case 'I':
+                        e.preventDefault();
+                        toggleMetadata();
+                        break;
+                }
+            });
+
+            // Mouse events for dragging when zoomed
+            const modalImage = document.getElementById('modalImage');
+
+            modalImage.addEventListener('mousedown', function(e) {
+                if (!isZoomed) return;
+
+                isDragging = true;
+                dragStart.x = e.clientX - imagePosition.x;
+                dragStart.y = e.clientY - imagePosition.y;
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging || !isZoomed) return;
+
+                imagePosition.x = e.clientX - dragStart.x;
+                imagePosition.y = e.clientY - dragStart.y;
+                applyZoom();
+                e.preventDefault();
+            });
+
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+
+            // Wheel zoom
+            modalImage.addEventListener('wheel', function(e) {
+                const modal = document.getElementById('imageModal');
+                if (!modal.classList.contains('active')) return;
+
+                e.preventDefault();
+
+                if (e.deltaY < 0) {
+                    zoomIn();
+                } else {
+                    zoomOut();
+                }
+            });
+
+            // Double-click to toggle zoom
+            modalImage.addEventListener('dblclick', function(e) {
+                e.preventDefault();
+                if (zoomLevel === 1) {
+                    zoomLevel = 2;
+
+                    // Calculate zoom center based on click position
+                    const rect = modalImage.getBoundingClientRect();
+                    const centerX = (e.clientX - rect.left - rect.width / 2) / zoomLevel;
+                    const centerY = (e.clientY - rect.top - rect.height / 2) / zoomLevel;
+
+                    imagePosition.x = -centerX;
+                    imagePosition.y = -centerY;
+                } else {
+                    resetZoom();
+                }
+                applyZoom();
+            });
+
+            // Touch events for mobile
+            let touchStartDistance = 0;
+            let touchStartZoom = 1;
+
+            modalImage.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    touchStartDistance = Math.hypot(
+                        touch2.clientX - touch1.clientX,
+                        touch2.clientY - touch1.clientY
+                    );
+                    touchStartZoom = zoomLevel;
+                    e.preventDefault();
+                } else if (e.touches.length === 1 && isZoomed) {
+                    const touch = e.touches[0];
+                    isDragging = true;
+                    dragStart.x = touch.clientX - imagePosition.x;
+                    dragStart.y = touch.clientY - imagePosition.y;
+                    e.preventDefault();
+                }
+            });
+
+            modalImage.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2) {
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    const distance = Math.hypot(
+                        touch2.clientX - touch1.clientX,
+                        touch2.clientY - touch1.clientY
+                    );
+
+                    if (touchStartDistance > 0) {
+                        const scale = distance / touchStartDistance;
+                        zoomLevel = Math.max(0.5, Math.min(5, touchStartZoom * scale));
+                        applyZoom();
+                    }
+                    e.preventDefault();
+                } else if (e.touches.length === 1 && isDragging && isZoomed) {
+                    const touch = e.touches[0];
+                    imagePosition.x = touch.clientX - dragStart.x;
+                    imagePosition.y = touch.clientY - dragStart.y;
+                    applyZoom();
+                    e.preventDefault();
+                }
+            });
+
+            modalImage.addEventListener('touchend', function(e) {
+                if (e.touches.length === 0) {
+                    isDragging = false;
+                    touchStartDistance = 0;
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Restore the saved tab
             restoreActiveTab();
@@ -2720,6 +4005,9 @@
                 }
             });
             
+            // Image Modal Event Handlers
+            setupImageModalEvents();
+
             // Content source filter setup
             const contentSourceFilter = document.getElementById('contentSourceFilter');
             const textFilters = document.getElementById('textFilters');
