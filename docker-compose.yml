@@ -15,3 +15,9 @@ services:
       - API_BASE_URL=http://host.docker.internal:8000
       - NODE_ENV=development
     restart: unless-stopped
+    networks:
+      - anthonys-musings-shared
+
+networks:
+  anthonys-musings-shared:
+    external: true
