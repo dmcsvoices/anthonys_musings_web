@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed - 2026-01-09
 
+#### Queue Modal Real-time Updates
+- **Fixed Queue modal showing stale prompt statuses** ([#commit-7edbe57](../../commit/7edbe57))
+  - Added auto-refresh every 5 seconds while Queue modal is open
+  - Created `refreshQueueModal()` function to update content without reopening
+  - Added `closeQueueModal()` function to properly clean up refresh interval
+  - Updated modal close handlers to stop auto-refresh when closed
+  - **Impact**: Queue modal now shows real-time status changes without manual refresh
+  - Prompts automatically disappear from "Queued" section when processed by Poets service
+  - No need to close and reopen modal to see updated statuses
+
 #### Browse Tab Audio Display
 - **Fixed Browse tab Audio filter not displaying audio files** ([#commit-4d21648](../../commit/4d21648))
   - Updated `loadAudioPrompts()` to query for `lyrics_prompt` type in addition to `music`, `audio`, `voice`
