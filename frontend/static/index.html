@@ -2627,22 +2627,29 @@
             }
         }
 
+        // Queue modal state
+        let queueModalRefreshInterval = null;
+        let currentQueueFilter = null;
+
         // Show queue details modal
         async function showQueueDetails(filterStatus = null) {
             try {
+                // Store the current filter for auto-refresh
+                currentQueueFilter = filterStatus;
+
                 // Fetch all prompts
                 const response = await fetch('/api/prompts?limit=100');
                 if (!response.ok) {
                     throw new Error(`Failed to fetch prompts: ${response.status}`);
                 }
-                
+
                 const prompts = await response.json();
-                
+
                 // Filter prompts by status if specified
-                const filteredPrompts = filterStatus 
+                const filteredPrompts = filterStatus
                     ? prompts.filter(p => p.status === filterStatus)
                     : prompts;
-                
+
                 // Group prompts by status
                 const groupedPrompts = {
                     unprocessed: prompts.filter(p => p.status === 'unprocessed'),
@@ -2650,7 +2657,7 @@
                     completed: prompts.filter(p => p.status === 'completed'),
                     failed: prompts.filter(p => p.status === 'failed')
                 };
-                
+
                 // Update modal title
                 const modalTitle = document.getElementById('queueModalTitle');
                 if (filterStatus) {
@@ -2664,7 +2671,7 @@
                 } else {
                     modalTitle.textContent = 'All Queue Details';
                 }
-                
+
                 // Build modal content
                 const modalContent = document.getElementById('queueModalContent');
                 modalContent.innerHTML = '';
@@ -2684,14 +2691,83 @@
                         modalContent.appendChild(section);
                     });
                 }
-                
+
                 // Show modal
                 document.getElementById('queueModal').style.display = 'flex';
-                
+
+                // Start auto-refresh (refresh every 5 seconds while modal is open)
+                if (queueModalRefreshInterval) {
+                    clearInterval(queueModalRefreshInterval);
+                }
+                queueModalRefreshInterval = setInterval(() => {
+                    refreshQueueModal();
+                }, 5000);
+
             } catch (error) {
                 console.error('Error loading queue details:', error);
                 alert('Failed to load queue details: ' + error.message);
             }
+        }
+
+        // Refresh queue modal content without re-showing
+        async function refreshQueueModal() {
+            try {
+                // Only refresh if modal is visible
+                const modal = document.getElementById('queueModal');
+                if (modal.style.display !== 'flex') {
+                    return;
+                }
+
+                // Fetch updated prompts
+                const response = await fetch('/api/prompts?limit=100');
+                if (!response.ok) {
+                    return; // Silently fail on refresh errors
+                }
+
+                const prompts = await response.json();
+
+                // Group prompts by status
+                const groupedPrompts = {
+                    unprocessed: prompts.filter(p => p.status === 'unprocessed'),
+                    processing: prompts.filter(p => p.status === 'processing'),
+                    completed: prompts.filter(p => p.status === 'completed'),
+                    failed: prompts.filter(p => p.status === 'failed')
+                };
+
+                // Update modal content
+                const modalContent = document.getElementById('queueModalContent');
+                modalContent.innerHTML = '';
+
+                if (currentQueueFilter) {
+                    // Show only the selected status
+                    const section = await createQueueSection(currentQueueFilter, groupedPrompts[currentQueueFilter]);
+                    modalContent.appendChild(section);
+                } else {
+                    // Show all sections
+                    const sectionPromises = ['unprocessed', 'processing', 'completed', 'failed']
+                        .filter(status => groupedPrompts[status].length > 0)
+                        .map(status => createQueueSection(status, groupedPrompts[status]));
+
+                    const sections = await Promise.all(sectionPromises);
+                    sections.forEach(section => {
+                        modalContent.appendChild(section);
+                    });
+                }
+
+            } catch (error) {
+                console.error('Error refreshing queue modal:', error);
+                // Don't alert on refresh errors, just log
+            }
+        }
+
+        // Close queue modal and stop auto-refresh
+        function closeQueueModal() {
+            document.getElementById('queueModal').style.display = 'none';
+            if (queueModalRefreshInterval) {
+                clearInterval(queueModalRefreshInterval);
+                queueModalRefreshInterval = null;
+            }
+            currentQueueFilter = null;
         }
 
         // Create a queue section for the modal (now async to handle artifact loading)
@@ -4045,12 +4121,12 @@
             
             // Setup queue modal close handlers
             document.getElementById('closeQueueModal').addEventListener('click', () => {
-                document.getElementById('queueModal').style.display = 'none';
+                closeQueueModal();
             });
-            
+
             document.getElementById('queueModal').addEventListener('click', (e) => {
                 if (e.target.id === 'queueModal') {
-                    document.getElementById('queueModal').style.display = 'none';
+                    closeQueueModal();
                 }
             });
             
