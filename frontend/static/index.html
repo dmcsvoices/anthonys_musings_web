@@ -789,7 +789,7 @@
             font-size: 14px;
         }
 
-        .card-thumbnail img.loaded + .thumbnail-overlay::before {
+        .card-thumbnail:has(img.loaded)::before {
             display: none;
         }
 
@@ -1911,17 +1911,17 @@
                                 <div class="type-label">Text</div>
                                 <div class="type-desc">Poetry, prose, dialogue</div>
                             </button>
-                            <button type="button" class="type-btn" data-type="music" onclick="selectPromptType('music')">
+                            <button type="button" class="type-btn" data-type="music" onclick="selectPromptType('music')" style="display: none;">
                                 <div class="type-icon">🎵</div>
                                 <div class="type-label">Music</div>
                                 <div class="type-desc">Lyrics, compositions</div>
                             </button>
-                            <button type="button" class="type-btn" data-type="voice" onclick="selectPromptType('voice')">
+                            <button type="button" class="type-btn" data-type="voice" onclick="selectPromptType('voice')" style="display: none;">
                                 <div class="type-icon">🎙️</div>
                                 <div class="type-label">Voice</div>
                                 <div class="type-desc">Spoken word, narration</div>
                             </button>
-                            <button type="button" class="type-btn" data-type="image" onclick="selectPromptType('image')">
+                            <button type="button" class="type-btn" data-type="image" onclick="selectPromptType('image')" style="display: none;">
                                 <div class="type-icon">🎨</div>
                                 <div class="type-label">Image</div>
                                 <div class="type-desc">Visual concepts, scenes</div>
@@ -1932,7 +1932,7 @@
                                 <div class="type-label">Image Prompt</div>
                                 <div class="type-desc">Request for image description</div>
                             </button>
-                            <button type="button" class="type-btn meta-prompt" data-type="music_prompt" onclick="selectPromptType('music_prompt')">
+                            <button type="button" class="type-btn meta-prompt" data-type="music_prompt" onclick="selectPromptType('music_prompt')" style="display: none;">
                                 <div class="type-icon">🎼✍️</div>
                                 <div class="type-label">Music Prompt</div>
                                 <div class="type-desc">Request for music description</div>
@@ -1942,7 +1942,7 @@
                                 <div class="type-label">Lyrics Prompt</div>
                                 <div class="type-desc">Request for lyrics description</div>
                             </button>
-                            <button type="button" class="type-btn meta-prompt" data-type="song_prompt" onclick="selectPromptType('song_prompt')">
+                            <button type="button" class="type-btn meta-prompt" data-type="song_prompt" onclick="selectPromptType('song_prompt')" style="display: none;">
                                 <div class="type-icon">🎵✍️</div>
                                 <div class="type-label">Song Prompt</div>
                                 <div class="type-desc">Request for song concept</div>
