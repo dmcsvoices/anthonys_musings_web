@@ -768,6 +768,29 @@
             transform: scale(1.1);
         }
 
+        .audio-download-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 8px;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 0.75em;
+            font-weight: 500;
+            transition: background 0.2s ease;
+            width: fit-content;
+            align-self: center;
+        }
+
+        .audio-download-link:hover {
+            background: rgba(255, 255, 255, 0.28);
+            color: white;
+        }
+
         /* Audio visualization animation */
         @keyframes audioBar {
             0% {
@@ -2988,6 +3011,18 @@
                 item.appendChild(filename);
             }
 
+            // Add download link for audio artifacts
+            if (isAudio) {
+                const downloadLink = document.createElement('a');
+                downloadLink.className = 'audio-download-link';
+                downloadLink.href = `/api/media/${artifact.file_path}`;
+                downloadLink.download = artifact.filename || artifact.file_path.split('/').pop();
+                downloadLink.textContent = '⬇ Download';
+                downloadLink.style.marginTop = '4px';
+                downloadLink.addEventListener('click', (e) => e.stopPropagation());
+                item.appendChild(downloadLink);
+            }
+
             return item;
         }
 
@@ -3587,6 +3622,10 @@
                                 </div>
                                 <span class="play-button">▶️</span>
                             </div>
+                            <a class="audio-download-link"
+                               href="/api/media/${audioArtifact.file_path}"
+                               download="${audioArtifact.file_path.split('/').pop()}"
+                               onclick="event.stopPropagation()">⬇ Download</a>
                             <audio preload="none" src="/api/media/${audioArtifact.file_path}"></audio>
                         </div>
                     `;
